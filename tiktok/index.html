@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Post to TikTok · Languages with Coco</title>
+<meta name="theme-color" content="#2B1055">
+<link rel="icon" href="/assets/coco.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+<header><img src="/assets/coco.svg" alt=""><a href="/">Languages with Coco</a></header>
+<h1>Post a lesson video to TikTok</h1>
+<p class="muted">Private tool for our own account. Upload a Learn French with Coco video and post it to TikTok.</p>
+
+<section id="signedOut" hidden>
+  <p>Sign in with the TikTok account you want to post to.</p>
+  <button class="btn" id="loginBtn" type="button">Continue with TikTok</button>
+  <p class="note">We only ask for: your basic profile (name and picture), and permission to upload and post videos you choose here.</p>
+</section>
+
+<section id="signedIn" hidden>
+  <div class="who"><img id="avatar" alt=""><div><b id="nick"></b><div class="muted" id="uname"></div></div>
+    <button class="btn link" id="logoutBtn" type="button" style="margin-left:auto">Disconnect</button></div>
+
+  <label for="file">Video file</label>
+  <input type="file" id="file" accept="video/mp4,video/quicktime,video/webm">
+  <video id="preview" controls hidden></video>
+  <div class="note" id="fileInfo"></div>
+
+  <label for="title">Caption</label>
+  <textarea id="title" maxlength="2200" placeholder="Learn French with Coco! #learnfrench"></textarea>
+
+  <label for="privacy">Who can view this video</label>
+  <select id="privacy"><option value="" selected disabled>Choose who can see it</option></select>
+
+  <div class="box">
+    <b>Allow users to</b>
+    <div class="row" id="rowComment"><span>Comment</span><input type="checkbox" id="allowComment"></div>
+    <div class="row" id="rowDuet"><span>Duet</span><input type="checkbox" id="allowDuet"></div>
+    <div class="row" id="rowStitch" style="border:0"><span>Stitch</span><input type="checkbox" id="allowStitch"></div>
+  </div>
+
+  <div class="box">
+    <div class="row" style="border:0"><span><b>Disclose video content</b><br><span class="note">Turn on if this video promotes yourself, a brand, product or service.</span></span><input type="checkbox" id="disclose"></div>
+    <div id="discloseOpts" hidden>
+      <div class="row"><span>Your brand<br><span class="note">You are promoting yourself or your own business. Labelled "Promotional content".</span></span><input type="checkbox" id="brandOrganic"></div>
+      <div class="row" style="border:0"><span>Branded content<br><span class="note">You are promoting another brand or a third party. Labelled "Paid partnership".</span></span><input type="checkbox" id="brandContent"></div>
+      <div class="warn" id="discloseWarn" hidden>Choose at least one option, or turn disclosure off.</div>
+    </div>
+  </div>
+
+  <p class="note" id="consent"></p>
+
+  <div class="actions">
+    <button class="btn" id="postBtn" type="button" disabled>Post</button>
+    <button class="btn alt" id="draftBtn" type="button" disabled>Save as draft</button>
+  </div>
+  <div class="bar" hidden id="bar"><i></i></div>
+  <div class="status" id="status" hidden></div>
+</section>
+
+<div class="status" id="msg" hidden></div>
+</main>
+<footer><a href="/">Home</a> · <a href="/privacy/">Privacy Policy</a> · <a href="/terms/">Terms of Service</a></footer>
+<script src="config.js"></script>
+<script src="tiktok.js"></script>
+</body>
+</html>

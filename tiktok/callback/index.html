@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Signing in · Languages with Coco</title>
+<link rel="icon" href="/assets/coco.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<main>
+<header><img src="/assets/coco.svg" alt=""><a href="/">Languages with Coco</a></header>
+<h1>Signing you in…</h1>
+<div class="status" id="msg">Talking to TikTok…</div>
+<p><a href="/tiktok/">Back to the posting page</a></p>
+</main>
+<script src="../config.js"></script>
+<script>
+(async function(){
+  const C = window.TIKTOK_CFG, msg = document.getElementById("msg");
+  const q = new URLSearchParams(location.search);
+  const fail = t => { msg.textContent = t; };
+  if (q.get("error")) return fail("TikTok said: " + (q.get("error_description") || q.get("error")));
+  const code = q.get("code"), state = q.get("state");
+  if (!code) return fail("No sign-in code came back from TikTok.");
+  if (!state || state !== sessionStorage.getItem("tt_state")) return fail("Sign-in check failed (state mismatch). Please start again.");
+  try {
+    const r = await fetch(C.workerUrl + "/token", {
+      method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ code, redirect_uri: C.redirectUri, code_verifier: sessionStorage.getItem("tt_verifier") || undefined })
+    });
+    const t = await r.json();
+    if (!t.access_token) return fail("Could not finish sign-in: " + (t.error_description || t.error || JSON.stringify(t)));
+    t.expires_at = Date.now() + (t.expires_in || 0) * 1000;
+    sessionStorage.setItem("tt_token", JSON.stringify(t));
+    sessionStorage.removeItem("tt_state"); sessionStorage.removeItem("tt_verifier");
+    location.replace("/tiktok/");
+  } catch (e) { fail("Network problem: " + e.message); }
+})();
+</script>
+</body>
+</html>

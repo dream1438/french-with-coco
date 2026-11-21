@@ -1,0 +1,9 @@
+name = "coco-tiktok"
+main = "tiktok-worker.js"
+compatibility_date = "2026-11-01"
+
+[vars]
+ALLOWED_ORIGIN = "https://languageswithcoco.com"
+# TIKTOK_CLIENT_KEY is set in the dashboard (plain text).
+# TIKTOK_CLIENT_SECRET must be added by the account owner as a Secret:
+#   npx wrangler secret put TIKTOK_CLIENT_SECRET   (or Dashboard → Settings → Variables → Add → Secret)
