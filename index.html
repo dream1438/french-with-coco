@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Languages with Coco</title>
+<meta name="description" content="Free animated language courses with Coco. Start with French.">
+<meta name="theme-color" content="#2B1055">
+<link rel="icon" href="assets/coco.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@700;800;900&family=Cairo:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--yellow:#FFD45C;--gold:#F4B73A;--cream:#FFF1C4;--navy:#24305E;--ink:#1D1640;--plum:#2B1055;--rose:#D3546B;--muted:#5E5878}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Nunito,system-ui,sans-serif;font-weight:700;color:#fff;background:var(--plum) linear-gradient(160deg,var(--plum),#4A1A6B 45%,var(--rose)) fixed}
+main{max-width:1000px;margin:0 auto;padding:24px 16px 48px}
+header{display:flex;align-items:center;gap:10px;font-family:"Baloo 2";font-weight:800;font-size:20px}
+header img{width:44px}
+header em{font-style:normal;color:var(--yellow)}
+.hero{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:28px 0}
+h1{font-family:"Baloo 2";font-size:clamp(34px,6vw,58px);line-height:1.05;margin:0}
+h1 em{font-style:normal;color:var(--yellow)}
+.hero p{font-size:18px;max-width:520px;line-height:1.5;opacity:.95}
+.ar{font-family:Cairo,sans-serif;direction:rtl;opacity:.9}
+.coco{width:clamp(120px,24vw,220px);animation:bob 3s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-8px)}}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.lang{background:#fff;color:var(--ink);border-radius:20px;padding:18px;text-decoration:none;box-shadow:0 10px 30px rgba(43,16,85,.2);display:flex;flex-direction:column;gap:6px;transition:transform .15s}
+a.lang:hover{transform:translateY(-4px)}
+.lang .flag{font-size:40px}
+.lang b{font-family:"Baloo 2";font-size:24px}
+.lang small{color:var(--muted)}
+.lang .go{margin-top:8px;align-self:flex-start;background:var(--yellow);border-radius:999px;padding:8px 16px;font-weight:900;box-shadow:0 4px 0 var(--gold)}
+.lang.soon{opacity:.6}
+.lang.soon .go{background:#eee;box-shadow:none;color:var(--muted)}
+footer{text-align:center;opacity:.85;font-size:14px;margin-top:36px}
+footer a{color:#fff}
+</style>
+</head>
+<body>
+<main>
+<header><img src="assets/coco.svg" alt=""> Languages <em>with Coco</em></header>
+<section class="hero">
+  <div>
+    <h1>Learn languages <em>with Coco</em></h1>
+    <p>Free animated courses, step by step: short video lessons, games, speaking practice, quizzes and worksheets.</p>
+    <p class="ar">دورات متحركة مجانية خطوة بخطوة: دروس فيديو قصيرة، ألعاب، تدريب على النطق، اختبارات وأوراق تمارين.</p>
+  </div>
+  <img class="coco" src="assets/coco.svg" alt="Coco">
+</section>
+<div class="grid">
+  <a class="lang" href="french/"><span class="flag">🇫🇷</span><b>French</b><small>Beginner A1 is open · الفرنسية</small><span class="go">Start ▶</span></a>
+  <div class="lang soon"><span class="flag">🇬🇧</span><b>English</b><small>Coming later · الإنجليزية</small><span class="go">Soon</span></div>
+  <div class="lang soon"><span class="flag">🇪🇸</span><b>Spanish</b><small>Coming later · الإسبانية</small><span class="go">Soon</span></div>
+  <div class="lang soon"><span class="flag">🇩🇪</span><b>German</b><small>Coming later · الألمانية</small><span class="go">Soon</span></div>
+</div>
+<footer>French lessons on YouTube: <a href="https://www.youtube.com/@French-WithCoco" target="_blank" rel="noopener">@French-WithCoco</a></footer>
+</main>
+</body>
+</html>
