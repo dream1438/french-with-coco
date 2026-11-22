@@ -3,57 +3,325 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Languages with Coco</title>
-<meta name="description" content="Free animated language courses with Coco. Start with French.">
-<meta name="theme-color" content="#2B1055">
-<link rel="icon" href="assets/coco.svg" type="image/svg+xml">
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@700;800;900&family=Cairo:wght@700;800&display=swap" rel="stylesheet">
+<title>Languages with Coco: free animated language courses</title>
+<meta name="description" content="Learn a new language, one small step at a time. Free animated courses with Coco: video lessons, games, speaking practice, quizzes and worksheets. Start with French.">
+<meta name="theme-color" content="#141B3D">
+<meta property="og:title" content="Languages with Coco">
+<meta property="og:description" content="Learn a new language, one small step at a time. Free animated courses with Coco. Start with French.">
+<meta property="og:image" content="https://languageswithcoco.com/assets/brand/favicon/favicon-512.png">
+<link rel="icon" href="assets/brand/favicon/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/brand/favicon/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/brand/favicon/apple-touch-icon-180.png">
+<link rel="preload" href="assets/brand/fonts/baloo-2-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/brand/fonts/nunito-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/brand/brand.css">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800&display=swap" rel="stylesheet">
 <style>
-:root{--yellow:#FFD45C;--gold:#F4B73A;--cream:#FFF1C4;--navy:#24305E;--ink:#1D1640;--plum:#2B1055;--rose:#D3546B;--muted:#5E5878}
+:root{--yellow:var(--coco-yellow);--gold:var(--coco-gold);--cream:var(--coco-cream);--navy:var(--coco-navy);--ink:var(--coco-ink);--muted:#5E5878;--line:#ECE7F5}
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;font-family:Nunito,system-ui,sans-serif;font-weight:700;color:#fff;background:var(--plum) linear-gradient(160deg,var(--plum),#4A1A6B 45%,var(--rose)) fixed}
-main{max-width:1000px;margin:0 auto;padding:24px 16px 48px}
-header{display:flex;align-items:center;gap:10px;font-family:"Baloo 2";font-weight:800;font-size:20px}
-header img{width:44px}
-header em{font-style:normal;color:var(--yellow)}
-.hero{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:28px 0}
-h1{font-family:"Baloo 2";font-size:clamp(34px,6vw,58px);line-height:1.05;margin:0}
-h1 em{font-style:normal;color:var(--yellow)}
-.hero p{font-size:18px;max-width:520px;line-height:1.5;opacity:.95}
-.ar{font-family:Cairo,sans-serif;direction:rtl;opacity:.9}
-.coco{width:clamp(120px,24vw,220px);animation:bob 3s ease-in-out infinite}
-@keyframes bob{50%{transform:translateY(-8px)}}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
-.lang{background:#fff;color:var(--ink);border-radius:20px;padding:18px;text-decoration:none;box-shadow:0 10px 30px rgba(43,16,85,.2);display:flex;flex-direction:column;gap:6px;transition:transform .15s}
-a.lang:hover{transform:translateY(-4px)}
-.lang .flag{font-size:40px}
-.lang b{font-family:"Baloo 2";font-size:24px}
-.lang small{color:var(--muted)}
-.lang .go{margin-top:8px;align-self:flex-start;background:var(--yellow);border-radius:999px;padding:8px 16px;font-weight:900;box-shadow:0 4px 0 var(--gold)}
-.lang.soon{opacity:.6}
-.lang.soon .go{background:#eee;box-shadow:none;color:var(--muted)}
-footer{text-align:center;opacity:.85;font-size:14px;margin-top:36px}
-footer a{color:#fff}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Nunito,system-ui,sans-serif;font-weight:700;color:var(--ink);background:#FFFBF0;overflow-x:hidden}
+h1,h2,h3{font-family:"Baloo 2",Nunito,sans-serif;font-weight:800;line-height:1.08;margin:0}
+a{color:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+.ar{font-family:Cairo,sans-serif;direction:rtl}
+
+/* night hero */
+.night{position:relative;color:#fff;background:var(--dots),var(--bg-night);overflow:hidden;padding-bottom:70px}
+.night::after{content:"";position:absolute;left:-5%;right:-5%;bottom:-1px;height:70px;background:#FFFBF0;border-radius:50% 50% 0 0/100% 100% 0 0}
+.greets{position:absolute;inset:0;pointer-events:none;font-family:"Baloo 2";font-weight:800;color:#fff}
+.greets span{position:absolute;opacity:.08;font-size:clamp(22px,3.4vw,44px);animation:drift 14s ease-in-out infinite}
+.greets span:nth-child(2n){animation-duration:18s;animation-delay:-4s}
+.greets span:nth-child(3n){animation-duration:22s;animation-delay:-9s}
+@keyframes drift{50%{transform:translateY(-14px) rotate(-3deg)}}
+.stars i{position:absolute;width:4px;height:4px;border-radius:50%;background:#FFE892;box-shadow:0 0 8px #FFD45C;animation:tw 3s ease-in-out infinite}
+@keyframes tw{50%{opacity:.25}}
+nav.top{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0}
+nav.top .logo img{height:54px;width:auto;display:block}
+nav.top .links{display:flex;gap:4px;align-items:center}
+nav.top .links a{text-decoration:none;font-weight:800;padding:9px 14px;border-radius:999px;font-size:15px}
+nav.top .links a:hover{background:rgba(255,255,255,.12)}
+nav.top .links a.cta{background:var(--yellow);color:var(--ink);box-shadow:0 3px 0 var(--gold)}
+.hero{position:relative;z-index:2;display:grid;grid-template-columns:1.15fr .85fr;gap:24px;align-items:center;padding:28px 0 10px}
+.eyebrow{display:inline-flex;gap:8px;align-items:center;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:6px 14px;font-size:14px;font-weight:900}
+.eyebrow b{color:var(--yellow)}
+.hero h1{font-size:clamp(38px,6.2vw,68px);margin:16px 0 14px;letter-spacing:-.5px}
+.hero h1 em{font-style:normal;color:var(--yellow)}
+.hero p{font-size:clamp(16px,1.6vw,19px);line-height:1.55;max-width:540px;margin:0 0 8px;opacity:.94}
+.hero p.ar{font-size:16px;opacity:.8;margin-bottom:24px}
+.btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:15px 26px;font:900 17px Nunito,sans-serif;text-decoration:none;cursor:pointer;background:var(--yellow);color:var(--ink);box-shadow:0 5px 0 var(--gold);transition:transform .12s}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--gold)}
+.btn.glass{background:rgba(255,255,255,.12);color:#fff;box-shadow:inset 0 0 0 2px rgba(255,255,255,.35)}
+.stage{position:relative;display:grid;place-items:center;min-height:360px}
+.halo{position:absolute;width:min(380px,80%);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(255,212,92,.35),rgba(123,77,255,0) 68%)}
+.coco-btn{position:relative;border:0;background:none;padding:0;cursor:pointer;width:min(330px,74vw);animation:bob 3.4s ease-in-out infinite}
+.coco-btn img{width:100%;display:block;filter:drop-shadow(0 18px 24px rgba(0,0,0,.35))}
+.coco-btn:active{transform:scale(.97)}
+@keyframes bob{50%{transform:translateY(-10px)}}
+.say{position:absolute;top:2%;inset-inline-end:4%;background:#fff;color:var(--ink);font-family:"Baloo 2";font-weight:800;font-size:clamp(20px,2.4vw,28px);padding:10px 20px;border-radius:22px;box-shadow:0 10px 30px rgba(0,0,0,.25);transform-origin:bottom left;animation:pop .45s cubic-bezier(.3,1.6,.6,1)}
+.say::after{content:"";position:absolute;bottom:-12px;left:30px;border:12px solid transparent;border-top-color:#fff;border-bottom:0}
+.say small{display:block;font:800 12px Nunito,sans-serif;color:var(--muted)}
+@keyframes pop{from{transform:scale(.4);opacity:0}}
+.tap{position:absolute;bottom:4px;font-size:13px;opacity:.75}
+
+/* stats */
+.stats{position:relative;z-index:3;margin-top:-34px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.stat{background:#fff;border-radius:20px;padding:16px 18px;box-shadow:0 12px 30px rgba(20,27,61,.12)}
+.stat b{display:block;font-family:"Baloo 2";font-size:32px;color:var(--navy);line-height:1}
+.stat span{color:var(--muted);font-size:14px}
+
+section.block{padding:64px 0 0}
+.kicker{color:var(--coco-gold-text);font-weight:900;text-transform:uppercase;letter-spacing:.08em;font-size:13px}
+section.block h2{font-size:clamp(30px,4vw,44px);margin:6px 0 10px}
+section.block .lead{color:var(--muted);font-size:17px;line-height:1.55;max-width:640px;margin:0 0 26px}
+
+/* courses */
+.courses{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
+.fr-card{position:relative;overflow:hidden;color:#fff;text-decoration:none;border-radius:28px;padding:28px;background:var(--dots),var(--bg-sunrise);min-height:300px;display:flex;flex-direction:column;justify-content:flex-end;box-shadow:0 20px 40px rgba(43,16,85,.25);transition:transform .2s}
+.fr-card:hover{transform:translateY(-4px)}
+.fr-card img{position:absolute;width:210px;top:18px;inset-inline-end:18px;filter:drop-shadow(0 12px 18px rgba(0,0,0,.3));transition:transform .3s}
+.fr-card:hover img{transform:rotate(-6deg) scale(1.04)}
+.fr-card .tag{align-self:flex-start;background:var(--yellow);color:var(--ink);border-radius:999px;padding:4px 12px;font-weight:900;font-size:13px}
+.fr-card h3{font-size:40px;margin:10px 0 4px}
+.fr-card p{margin:0 0 16px;opacity:.92;max-width:330px;line-height:1.45}
+.fr-card .tri{display:flex;width:70px;height:6px;border-radius:3px;overflow:hidden;margin-bottom:12px}
+.tri i{flex:1}.tri i:nth-child(1){background:#0055A4}.tri i:nth-child(2){background:#fff}.tri i:nth-child(3){background:#EF4135}
+.fr-card .go{align-self:flex-start}
+.soon-list{display:grid;gap:12px}
+.soon{display:flex;align-items:center;gap:14px;background:#fff;border:2px dashed #E6DDC4;border-radius:20px;padding:14px 18px}
+.soon .flag{font-size:34px}
+.soon b{font-family:"Baloo 2";font-size:22px;display:block}
+.soon small{color:var(--muted)}
+.soon .pill{margin-inline-start:auto;background:var(--cream);color:var(--coco-gold-text);border-radius:999px;padding:4px 12px;font-size:13px;font-weight:900}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.step{position:relative;background:#fff;border-radius:24px;padding:18px 18px 20px;box-shadow:0 10px 26px rgba(20,27,61,.08);transition:transform .2s}
+.step:hover{transform:translateY(-4px)}
+.step .pic{height:132px;display:grid;place-items:center;border-radius:18px;background:var(--bg-sunny);margin-bottom:14px}
+.step .pic img{height:118px}
+.step:hover .pic img{animation:hop .5s}
+@keyframes hop{50%{transform:translateY(-10px)}}
+.step .n{position:absolute;top:12px;inset-inline-start:12px;width:30px;height:30px;border-radius:50%;background:var(--navy);color:var(--yellow);display:grid;place-items:center;font-weight:900}
+.step h3{font-size:22px;margin-bottom:4px}
+.step p{margin:0;color:var(--muted);line-height:1.45;font-size:15px}
+
+/* try it */
+.try{display:grid;grid-template-columns:auto 1fr;gap:26px;align-items:center;background:#fff;border-radius:28px;padding:26px;box-shadow:0 14px 34px rgba(20,27,61,.1)}
+.try .coco{width:170px}
+.try h3{font-size:28px;margin-bottom:6px}
+.try .q{color:var(--muted);margin:0 0 14px}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.opt{border:3px solid var(--line);background:#fff;border-radius:16px;padding:14px;font:800 20px "Baloo 2",Nunito,sans-serif;color:var(--ink);cursor:pointer;transition:transform .12s,border-color .12s}
+.opt:hover:not([disabled]){border-color:var(--yellow);transform:translateY(-2px)}
+.opt.right{border-color:#1E8E4E;background:#E9F7EF}
+.opt.wrong{border-color:#C62F3B;background:#FDECEE;animation:shake .4s}
+@keyframes shake{25%,75%{transform:translateX(-5px)}50%{transform:translateX(5px)}}
+.fb{min-height:26px;margin-top:12px;font-weight:900}
+.fb a{color:var(--navy)}
+
+/* youtube band */
+.yt{margin-top:64px;position:relative;overflow:hidden;color:#fff;background:var(--dots),var(--bg-night);border-radius:32px;padding:34px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}
+.yt h2{font-size:clamp(26px,3.4vw,38px);margin-bottom:6px}
+.yt p{margin:0 0 18px;opacity:.9;line-height:1.5;max-width:560px}
+.yt img{width:170px}
+.btn.red{background:#FF3B30;color:#fff;box-shadow:0 5px 0 #B3261E}
+
+footer{margin-top:64px;padding:30px 0 40px;border-top:1px solid #EFE6CF;color:var(--muted);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+footer img{height:40px;width:auto}
+footer a{color:var(--navy);text-decoration:none;font-weight:900}
+footer nav{display:flex;gap:16px;flex-wrap:wrap}
+
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+
+@media (max-width:900px){
+  .hero{grid-template-columns:1fr;text-align:center}
+  .hero p{margin-inline:auto}.btns{justify-content:center}
+  .stage{min-height:300px;order:-1}
+  .coco-btn{width:min(250px,62vw)}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .courses{grid-template-columns:1fr}
+  .steps{grid-template-columns:repeat(2,1fr)}
+  .try{grid-template-columns:1fr;text-align:center}.try .coco{margin:0 auto;width:130px}
+  .yt{grid-template-columns:1fr;text-align:center}.yt img{margin:0 auto;width:130px;order:-1}
+}
+@media (max-width:560px){
+  nav.top .links a:not(.cta){display:none}
+  nav.top .logo img{height:42px}
+  .steps{grid-template-columns:1fr 1fr;gap:10px}.step{padding:12px}.step .pic{height:96px}.step .pic img{height:84px}.step h3{font-size:19px}.step p{font-size:13px}
+  .opts{grid-template-columns:1fr}
+  .fr-card{min-height:340px}.fr-card img{width:150px}
+  .stat b{font-size:26px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
 </style>
 </head>
 <body>
-<main>
-<header><img src="assets/coco.svg" alt=""> Languages <em>with Coco</em></header>
-<section class="hero">
-  <div>
-    <h1>Learn languages <em>with Coco</em></h1>
-    <p>Free animated courses, step by step: short video lessons, games, speaking practice, quizzes and worksheets.</p>
-    <p class="ar">دورات متحركة مجانية خطوة بخطوة: دروس فيديو قصيرة، ألعاب، تدريب على النطق، اختبارات وأوراق تمارين.</p>
+<header class="night">
+  <div class="greets" aria-hidden="true">
+    <span style="left:4%;top:16%">Hello!</span><span style="left:70%;top:8%">Bonjour !</span><span style="left:38%;top:70%">¡Hola!</span>
+    <span style="left:84%;top:58%">Ciao!</span><span style="left:12%;top:78%">Hallo!</span><span style="left:56%;top:30%">Olá!</span>
+    <span style="left:24%;top:44%" class="ar">مرحبًا</span>
   </div>
-  <img class="coco" src="assets/coco.svg" alt="Coco">
-</section>
-<div class="grid">
-  <a class="lang" href="french/"><span class="flag">🇫🇷</span><b>French</b><small>Beginner A1 is open · الفرنسية</small><span class="go">Start ▶</span></a>
-  <div class="lang soon"><span class="flag">🇬🇧</span><b>English</b><small>Coming later · الإنجليزية</small><span class="go">Soon</span></div>
-  <div class="lang soon"><span class="flag">🇪🇸</span><b>Spanish</b><small>Coming later · الإسبانية</small><span class="go">Soon</span></div>
-  <div class="lang soon"><span class="flag">🇩🇪</span><b>German</b><small>Coming later · الألمانية</small><span class="go">Soon</span></div>
-</div>
-<footer>French lessons on YouTube: <a href="https://www.youtube.com/@French-WithCoco" target="_blank" rel="noopener">@French-WithCoco</a><br><a href="privacy/">Privacy Policy</a> · <a href="terms/">Terms of Service</a> · <a href="mailto:languageswithcoco@gmail.com">Contact</a></footer>
+  <div class="stars" aria-hidden="true"><i style="left:8%;top:30%"></i><i style="left:46%;top:12%;animation-delay:-1s"></i><i style="left:92%;top:24%;animation-delay:-2s"></i><i style="left:64%;top:84%;animation-delay:-.5s"></i><i style="left:30%;top:88%;animation-delay:-1.6s"></i></div>
+  <div class="wrap">
+    <nav class="top">
+      <a class="logo" href="./" aria-label="Languages with Coco"><img src="assets/brand/logo/languages-with-coco-horizontal-on-dark-108.webp" alt="Languages with Coco" width="186" height="54"></a>
+      <div class="links">
+        <a href="#courses">Courses</a>
+        <a href="#how">How it works</a>
+        <a href="https://www.youtube.com/@French-WithCoco" target="_blank" rel="noopener">YouTube</a>
+        <a class="cta" href="french/">Start free</a>
+      </div>
+    </nav>
+    <div class="hero">
+      <div>
+        <span class="eyebrow">🇫🇷 <b>French A1</b> is open · free</span>
+        <h1>Learn a new language, <em>one small step at a time</em></h1>
+        <p>Short animated lessons with Coco, then games, speaking practice, quizzes and worksheets. Your progress is saved as you go.</p>
+        <p class="ar">تعلّم لغة جديدة خطوة صغيرة كل مرة: دروس متحركة قصيرة مع كوكو، ألعاب، تدريب على النطق، اختبارات وأوراق تمارين.</p>
+        <div class="btns">
+          <a class="btn" href="french/">▶ Start French free</a>
+          <a class="btn glass" href="#try">Try a quick question</a>
+        </div>
+      </div>
+      <div class="stage">
+        <div class="halo"></div>
+        <button class="coco-btn" id="cocoBtn" type="button" aria-label="Tap Coco to hear hello in another language">
+          <img src="assets/brand/mascot/coco-hello-nobubble.svg" alt="Coco the chick waving hello">
+        </button>
+        <div class="say" id="say" aria-live="polite">Bonjour !<small>French</small></div>
+        <span class="tap">Tap Coco 👆</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat"><b>24</b><span>French A1 lessons</span></div>
+      <div class="stat"><b>A1 → C1</b><span>5 levels planned</span></div>
+      <div class="stat"><b>6</b><span>ways to practise each lesson</span></div>
+      <div class="stat"><b>100%</b><span>free, English + Arabic</span></div>
+    </div>
+
+    <section class="block reveal" id="courses">
+      <div class="kicker">Courses</div>
+      <h2>Pick your language</h2>
+      <p class="lead">French is open now. More languages will join, each with its own Coco.</p>
+      <div class="courses">
+        <a class="fr-card" href="french/">
+          <img src="french/assets/coco/wave.svg" alt="">
+          <span class="tag">Open now</span>
+          <h3>French</h3>
+          <div class="tri" aria-hidden="true"><i></i><i></i><i></i></div>
+          <p>From your first <i>Bonjour</i> to real conversations. Beginner A1 is ready. <span class="ar" style="display:block;opacity:.85">الفرنسية من الصفر</span></p>
+          <span class="btn go">Start French ▶</span>
+        </a>
+        <div class="soon-list">
+          <div class="soon"><span class="flag">🇬🇧</span><div><b>English</b><small>الإنجليزية</small></div><span class="pill">Coming later</span></div>
+          <div class="soon"><span class="flag">🇪🇸</span><div><b>Spanish</b><small>الإسبانية</small></div><span class="pill">Coming later</span></div>
+          <div class="soon"><span class="flag">🇩🇪</span><div><b>German</b><small>الألمانية</small></div><span class="pill">Coming later</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block reveal" id="how">
+      <div class="kicker">How it works</div>
+      <h2>Every lesson, four small steps</h2>
+      <p class="lead">Each step takes a few minutes. Coco cheers you on, and you earn XP, streaks and badges along the way.</p>
+      <div class="steps">
+        <div class="step"><span class="n">1</span><div class="pic"><img src="assets/brand/mascot/coco-headphones.svg" alt=""></div><h3>Watch</h3><p>A short animated video lesson, with English or Arabic subtitles.</p></div>
+        <div class="step"><span class="n">2</span><div class="pic"><img src="assets/brand/mascot/coco-hello.svg" alt=""></div><h3>Practise</h3><p>Match pairs, flip flashcards, speak into the mic and role-play the dialogue.</p></div>
+        <div class="step"><span class="n">3</span><div class="pic"><img src="assets/brand/mascot/coco-teacher.svg" alt=""></div><h3>Quiz</h3><p>Check what you learned with listening and fill-the-gap questions.</p></div>
+        <div class="step"><span class="n">4</span><div class="pic"><img src="assets/brand/mascot/coco-traveller.svg" alt=""></div><h3>Keep going</h3><p>Download the worksheet, track your progress and move to the next lesson.</p></div>
+      </div>
+    </section>
+
+    <section class="block reveal" id="try">
+      <div class="kicker">Try it</div>
+      <h2>Your first French word</h2>
+      <div class="try">
+        <img class="coco" id="tryCoco" src="french/assets/coco/think.svg" alt="Coco">
+        <div>
+          <h3>How do you say “Good evening” in French?</h3>
+          <p class="q">Tap an answer. 🔊 You will hear it too.</p>
+          <div class="opts" id="opts">
+            <button class="opt" data-ok="0" lang="fr">Bonjour</button>
+            <button class="opt" data-ok="1" lang="fr">Bonsoir</button>
+            <button class="opt" data-ok="0" lang="fr">Merci</button>
+          </div>
+          <div class="fb" id="fb" role="status"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block reveal" style="padding-top:48px"><div data-signup data-privacy="privacy/"></div></section>
+
+    <section class="yt reveal" style="margin-top:40px">
+      <div>
+        <h2>Watch every lesson on YouTube</h2>
+        <p>New French lessons and Shorts every day on <b>@French-WithCoco</b>. Subscribe so you don't miss the next one.</p>
+        <a class="btn red" href="https://www.youtube.com/@French-WithCoco?sub_confirmation=1" target="_blank" rel="noopener">▶ Subscribe on YouTube</a>
+      </div>
+      <img src="french/assets/coco/laugh.svg" alt="">
+    </section>
+  </div>
 </main>
+
+<footer>
+  <div class="wrap">
+    <img src="assets/brand/logo/languages-with-coco-horizontal-on-light-80.webp" alt="Languages with Coco" width="138" height="40" loading="lazy">
+    <nav><a href="french/">French course</a><a href="https://www.youtube.com/@French-WithCoco" target="_blank" rel="noopener">YouTube</a><a href="privacy/">Privacy Policy</a><a href="terms/">Terms of Service</a><a href="mailto:languageswithcoco@gmail.com">Contact</a></nav>
+  </div>
+</footer>
+
+<script src="assets/brand/signup-config.js"></script>
+<script src="assets/brand/signup.js" defer></script>
+<script>
+(function () {
+  var hellos = [["Bonjour !", "French", "fr-FR"], ["Hello!", "English", "en-GB"], ["¡Hola!", "Spanish", "es-ES"], ["Hallo!", "German", "de-DE"], ["Ciao!", "Italian", "it-IT"], ["Olá!", "Portuguese", "pt-PT"], ["مرحبًا!", "Arabic", "ar"]];
+  var i = 0, say = document.getElementById("say"), btn = document.getElementById("cocoBtn");
+  function speak(text, lang) {
+    try { if (!window.speechSynthesis) return; speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(text.replace(/[!¡]/g, "")); u.lang = lang; u.rate = .9; speechSynthesis.speak(u); } catch (e) {}
+  }
+  function show(k, talk) {
+    var h = hellos[k];
+    say.innerHTML = ""; say.appendChild(document.createTextNode(h[0]));
+    var s = document.createElement("small"); s.textContent = h[1]; say.appendChild(s);
+    say.style.animation = "none"; void say.offsetWidth; say.style.animation = "";
+    if (talk) speak(h[0], h[2]);
+  }
+  btn.addEventListener("click", function () { i = (i + 1) % hellos.length; show(i, true); });
+  var auto = setInterval(function () { i = (i + 1) % hellos.length; show(i, false); }, 2600);
+  btn.addEventListener("click", function () { clearInterval(auto); }, { once: true });
+
+  var coco = document.getElementById("tryCoco"), fb = document.getElementById("fb");
+  document.getElementById("opts").addEventListener("click", function (e) {
+    var b = e.target.closest(".opt"); if (!b) return;
+    speak(b.textContent, "fr-FR");
+    if (b.getAttribute("data-ok") === "1") {
+      b.classList.add("right");
+      this.querySelectorAll(".opt").forEach(function (o) { o.disabled = true; });
+      coco.src = "french/assets/coco/laugh.svg";
+      fb.innerHTML = 'Bravo ! 🎉 <b lang="fr">Bonsoir</b> means good evening. <a href="french/#/lesson/A1-01">Learn more in lesson 1 →</a>';
+    } else {
+      b.classList.remove("wrong"); void b.offsetWidth; b.classList.add("wrong");
+      coco.src = "french/assets/coco/oops.svg";
+      fb.textContent = b.textContent === "Merci" ? "Merci means thank you. Try again!" : "Bonjour is for the daytime. Try again!";
+    }
+  });
+
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (es) { es.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add("in"); io.unobserve(x.target); } }); }, { threshold: .12 });
+    document.querySelectorAll(".reveal").forEach(function (el) { io.observe(el); });
+  } else document.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("in"); });
+})();
+</script>
 </body>
 </html>

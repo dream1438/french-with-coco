@@ -101,12 +101,14 @@
   /* ---------------- Coco buddy (reacts in the corner) ---------------- */
   var buddy = document.createElement("div");
   buddy.className = "buddy";
-  buddy.innerHTML = '<div class="bub" role="status" aria-live="polite"></div><img src="assets/coco.svg" alt="Coco">';
+  buddy.innerHTML = '<div class="bub" role="status" aria-live="polite"></div><img src="assets/coco/default.svg" alt="Coco">';
   document.body.appendChild(buddy);
+  setTimeout(function () { ["happy", "proud", "oops", "think", "laugh"].forEach(function (n) { var im = new Image(); im.src = "assets/coco/" + n + ".svg"; }); }, 2500);
   var buddyTimer = null;
   G.react = function (mood, text) {
     var img = buddy.querySelector("img"), bub = buddy.querySelector(".bub");
     buddy.classList.add("show");
+    img.src = "assets/coco/" + ({ happy: "happy", win: "proud", sad: "oops", think: "think" }[mood] || "default") + ".svg";
     img.className = ""; void img.offsetWidth; img.className = "m-" + mood;
     bub.textContent = text || ""; bub.style.display = text ? "block" : "none";
     clearTimeout(buddyTimer);
@@ -240,7 +242,7 @@
     return "";
   }
   function endBox(l, title, extra) {
-    return '<div class="card result">' + A.coco("jump") + "<h2>" + title + "</h2>" + (extra || "") +
+    return '<div class="card result">' + A.coco("jump", "laugh") + "<h2>" + title + "</h2>" + (extra || "") +
       '<div class="actions" style="justify-content:center;margin-top:14px"><button class="btn" data-g="again">' + t("again") + "</button>" +
       (l ? '<a class="btn ghost" href="#/lesson/' + l.code + '">' + t("backLesson") + "</a>" : '<a class="btn ghost" href="#/">' + t("backLesson") + "</a>") + "</div></div>";
   }
@@ -409,7 +411,7 @@
     while (c.p < lines.length && lines[c.p].who !== c.role) { c.shown.push(c.p); spoken.push(lines[c.p].fr); c.p++; }
     c.opts = c.p < lines.length ? shuffle([lines[c.p].fr].concat(distractors(lines[c.p].fr, l))) : null;
     c.wrong = [];
-    if (spoken.length && speakLast !== false) setTimeout(function () { A.say(spoken.join(" ")); }, 350);
+    if (spoken.length && speakLast !== false) setTimeout(function () { A.sayList(spoken); }, 350);
     if (c.p >= lines.length && !c.finished) {
       c.finished = true; played(l.code, "role", {}); award("role");
       setTimeout(function () { G.sfx("win"); G.react("win", t("cocoWin")); G.addXP(20); }, 900);
@@ -461,7 +463,7 @@
     else if (act === "selfok") { G.sfx("good"); G.react("happy", rnd(t("cocoGood"))); speakNext(l, 80); }
     else if (act === "snext") speakNext(l);
     else if (act === "role") { cur.role = el.getAttribute("data-who"); roleAdvance(l); }
-    else if (act === "hearall") { A.say(l.dialogue.lines.map(function (x) { return x.fr; }).join(" ")); return; }
+    else if (act === "hearall") { A.sayList(l.dialogue.lines.map(function (x) { return x.fr; })); return; }
     else if (act === "rpick") rolePick(+el.getAttribute("data-i"), l);
     A.render();
   });
