@@ -105,7 +105,7 @@
   function nextLesson() { for (var i = 0; i < LESSONS.length; i++) if (!isDone(LESSONS[i].code)) return LESSONS[i]; return null; }
   function doneCount() { return LESSONS.filter(function (l) { return isDone(l.code); }).length; }
   function lessonNo(l) { return t("lesson") + " " + l.n; }
-  function coco(cls, look) { return '<img class="' + (cls || "") + '" src="assets/coco/' + (look || "default") + '.svg" alt="Coco">'; }
+  function coco(cls, look) { return '<img class="' + (cls || "") + '" src="assets/coco/' + (look || "default") + '.svg" width="224" height="245" alt="Coco">'; }
   function lessonSteps(code) {
     var r = state.lessons[code] || {}, g = GM();
     return [!!r.watched, g ? g.gamesPlayed(code) >= 2 : !!r.words, (r.quizBest || 0) >= PASS, !!r.sheet];
@@ -121,7 +121,34 @@
       vs.filter(function (v) { return /fr-FR/i.test(v.lang); })[0] || vs[0] || null;
   }
   if ("speechSynthesis" in window) { findVoice(); speechSynthesis.onvoiceschanged = findVoice; }
+  // Course voices first (french/audio/*.mp3, same voices as the videos), browser voice as fallback.
+  var AUDIO = window.COURSE_AUDIO || {}, player = null;
   function say(text) {
+    var f = AUDIO[text] || AUDIO[String(text).trim()];
+    if (f) {
+      try {
+        if ("speechSynthesis" in window) speechSynthesis.cancel();
+        if (!player) player = new Audio();
+        player.onended = null; player.pause(); player.src = "audio/" + f + ".mp3"; player.currentTime = 0;
+        var pr = player.play(); if (pr && pr.catch) pr.catch(function () { sayTTS(text); });
+        return;
+      } catch (e) {}
+    }
+    sayTTS(text);
+  }
+  function sayList(list) {
+    if (!list.length) return;
+    if (!list.every(function (x) { return AUDIO[x]; })) { sayTTS(list.join(" ")); return; }
+    var i = 0;
+    if (!player) player = new Audio();
+    var next = function () {
+      if (i >= list.length) { player.onended = null; return; }
+      player.src = "audio/" + AUDIO[list[i++]] + ".mp3"; var pr = player.play(); if (pr && pr.catch) pr.catch(function () {});
+    };
+    if ("speechSynthesis" in window) speechSynthesis.cancel();
+    player.pause(); player.onended = next; next();
+  }
+  function sayTTS(text) {
     if (!("speechSynthesis" in window)) { alertNoVoice(); return; }
     speechSynthesis.cancel();
     var u = new SpeechSynthesisUtterance(text.replace(/·/g, ","));
@@ -132,7 +159,7 @@
 
   /* API for games.js */
   window.CocoApp = {
-    state: function () { return state; }, save: save, rec: rec, touchDay: touchDay, say: say, esc: esc, pick: pick, ar: ar,
+    state: function () { return state; }, save: save, rec: rec, touchDay: touchDay, say: function (x) { if (player) player.onended = null; say(x); }, sayList: sayList, esc: esc, pick: pick, ar: ar,
     byCode: byCode, LESSONS: LESSONS, render: function () { render(); }, coco: coco, lessonNo: lessonNo
   };
   function GM() { return (window.CocoApp && window.CocoApp.games) || null; }
@@ -381,6 +408,7 @@
     document.documentElement.dir = isAr ? "rtl" : "ltr";
     document.getElementById("langBtn").textContent = isAr ? "English" : "العربية";
     document.querySelectorAll("[data-t]").forEach(function (el) { el.textContent = t(el.getAttribute("data-t")); });
+    if (window.CocoSignup) window.CocoSignup.refresh();
   }
 
   document.addEventListener("click", function (e) {

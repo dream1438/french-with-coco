@@ -173,3 +173,9 @@ html[dir=rtl] .opt:hover:not([disabled]){transform:translateX(-3px)}
   body[data-page=home]::before{height:470px}
 }
 .hsay .fr{display:block}
+/* speed: keep the footer from jumping while the app renders; size images before they load */
+main#app{min-height:100vh}
+#app img[width]{height:auto}
+.foot img{width:auto}
+#app .lcard .thumb img.cc{height:78%;width:auto}
+.su-wrap{max-width:1100px;margin:30px auto 0;padding:0 16px}

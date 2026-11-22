@@ -17,3 +17,20 @@
   --bg-sunrise:linear-gradient(135deg,#2B1055,#D3546B);
   --dots:radial-gradient(rgba(255,255,255,.13) 1.2px,transparent 1.3px) 0 0/22px 22px;
 }
+/* new-lesson email sign-up box */
+[data-signup]{display:grid;grid-template-columns:1fr minmax(260px,420px);gap:10px 20px;align-items:center;background:#fff;border-radius:24px;padding:20px 22px;box-shadow:0 12px 30px rgba(20,27,61,.10);border:1px solid #F1EADA;color:#1D1640}
+[data-signup][hidden]{display:none}
+[data-signup] .su-text b{display:block;font-family:"Baloo 2",Nunito,sans-serif;font-size:22px;line-height:1.15}
+[data-signup] .su-text span{color:#5E5878;font-size:15px}
+.su-form{display:flex;gap:8px}
+.su-form input[type=email]{flex:1;min-width:0;border:2px solid #ECE7F5;border-radius:999px;padding:12px 16px;font:700 16px Nunito,sans-serif;color:#1D1640}
+.su-form input[type=email]:focus{outline:none;border-color:#F4B73A}
+.su-form button{border:0;border-radius:999px;padding:12px 20px;background:#24305E;color:#fff;font:900 15px Nunito,sans-serif;cursor:pointer;box-shadow:0 4px 0 #141b3a;white-space:nowrap}
+.su-form button[disabled]{opacity:.6}
+.su-hp{position:absolute;left:-9999px;width:1px;height:1px}
+.su-msg{margin:0;font-weight:900;grid-column:2}
+.su-msg:empty{display:none}
+.su-msg.good{color:#155c34}.su-msg.bad{color:#8c1f29}
+.su-note{grid-column:2;color:#5E5878;font-size:12px}.su-note a{color:#24305E}
+[data-signup].su-done .su-msg{grid-column:2;font-size:17px}
+@media (max-width:700px){[data-signup]{grid-template-columns:1fr}.su-msg,.su-note,[data-signup].su-done .su-msg{grid-column:1}.su-form{flex-direction:column}}

@@ -103,7 +103,7 @@
   buddy.className = "buddy";
   buddy.innerHTML = '<div class="bub" role="status" aria-live="polite"></div><img src="assets/coco/default.svg" alt="Coco">';
   document.body.appendChild(buddy);
-  ["happy", "proud", "oops", "think", "laugh"].forEach(function (n) { var im = new Image(); im.src = "assets/coco/" + n + ".svg"; });
+  setTimeout(function () { ["happy", "proud", "oops", "think", "laugh"].forEach(function (n) { var im = new Image(); im.src = "assets/coco/" + n + ".svg"; }); }, 2500);
   var buddyTimer = null;
   G.react = function (mood, text) {
     var img = buddy.querySelector("img"), bub = buddy.querySelector(".bub");
@@ -411,7 +411,7 @@
     while (c.p < lines.length && lines[c.p].who !== c.role) { c.shown.push(c.p); spoken.push(lines[c.p].fr); c.p++; }
     c.opts = c.p < lines.length ? shuffle([lines[c.p].fr].concat(distractors(lines[c.p].fr, l))) : null;
     c.wrong = [];
-    if (spoken.length && speakLast !== false) setTimeout(function () { A.say(spoken.join(" ")); }, 350);
+    if (spoken.length && speakLast !== false) setTimeout(function () { A.sayList(spoken); }, 350);
     if (c.p >= lines.length && !c.finished) {
       c.finished = true; played(l.code, "role", {}); award("role");
       setTimeout(function () { G.sfx("win"); G.react("win", t("cocoWin")); G.addXP(20); }, 900);
@@ -463,7 +463,7 @@
     else if (act === "selfok") { G.sfx("good"); G.react("happy", rnd(t("cocoGood"))); speakNext(l, 80); }
     else if (act === "snext") speakNext(l);
     else if (act === "role") { cur.role = el.getAttribute("data-who"); roleAdvance(l); }
-    else if (act === "hearall") { A.say(l.dialogue.lines.map(function (x) { return x.fr; }).join(" ")); return; }
+    else if (act === "hearall") { A.sayList(l.dialogue.lines.map(function (x) { return x.fr; })); return; }
     else if (act === "rpick") rolePick(+el.getAttribute("data-i"), l);
     A.render();
   });

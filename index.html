@@ -12,6 +12,8 @@
 <link rel="icon" href="assets/brand/favicon/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="assets/brand/favicon/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="assets/brand/favicon/apple-touch-icon-180.png">
+<link rel="preload" href="assets/brand/fonts/baloo-2-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/brand/fonts/nunito-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/brand/brand.css">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800&display=swap" rel="stylesheet">
 <style>
@@ -35,7 +37,7 @@ a{color:inherit}
 .stars i{position:absolute;width:4px;height:4px;border-radius:50%;background:#FFE892;box-shadow:0 0 8px #FFD45C;animation:tw 3s ease-in-out infinite}
 @keyframes tw{50%{opacity:.25}}
 nav.top{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0}
-nav.top .logo img{height:54px;display:block}
+nav.top .logo img{height:54px;width:auto;display:block}
 nav.top .links{display:flex;gap:4px;align-items:center}
 nav.top .links a{text-decoration:none;font-weight:800;padding:9px 14px;border-radius:999px;font-size:15px}
 nav.top .links a:hover{background:rgba(255,255,255,.12)}
@@ -129,7 +131,7 @@ section.block .lead{color:var(--muted);font-size:17px;line-height:1.55;max-width
 
 footer{margin-top:64px;padding:30px 0 40px;border-top:1px solid #EFE6CF;color:var(--muted);font-size:14px}
 footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
-footer img{height:40px}
+footer img{height:40px;width:auto}
 footer a{color:var(--navy);text-decoration:none;font-weight:900}
 footer nav{display:flex;gap:16px;flex-wrap:wrap}
 
@@ -168,7 +170,7 @@ footer nav{display:flex;gap:16px;flex-wrap:wrap}
   <div class="stars" aria-hidden="true"><i style="left:8%;top:30%"></i><i style="left:46%;top:12%;animation-delay:-1s"></i><i style="left:92%;top:24%;animation-delay:-2s"></i><i style="left:64%;top:84%;animation-delay:-.5s"></i><i style="left:30%;top:88%;animation-delay:-1.6s"></i></div>
   <div class="wrap">
     <nav class="top">
-      <a class="logo" href="./" aria-label="Languages with Coco"><img src="assets/brand/logo/languages-with-coco-horizontal-on-dark.svg" alt="Languages with Coco"></a>
+      <a class="logo" href="./" aria-label="Languages with Coco"><img src="assets/brand/logo/languages-with-coco-horizontal-on-dark-108.webp" alt="Languages with Coco" width="186" height="54"></a>
       <div class="links">
         <a href="#courses">Courses</a>
         <a href="#how">How it works</a>
@@ -259,7 +261,9 @@ footer nav{display:flex;gap:16px;flex-wrap:wrap}
       </div>
     </section>
 
-    <section class="yt reveal">
+    <section class="block reveal" style="padding-top:48px"><div data-signup data-privacy="privacy/"></div></section>
+
+    <section class="yt reveal" style="margin-top:40px">
       <div>
         <h2>Watch every lesson on YouTube</h2>
         <p>New French lessons and Shorts every day on <b>@French-WithCoco</b>. Subscribe so you don't miss the next one.</p>
@@ -272,11 +276,13 @@ footer nav{display:flex;gap:16px;flex-wrap:wrap}
 
 <footer>
   <div class="wrap">
-    <img src="assets/brand/logo/languages-with-coco-horizontal-on-light.svg" alt="Languages with Coco">
+    <img src="assets/brand/logo/languages-with-coco-horizontal-on-light-80.webp" alt="Languages with Coco" width="138" height="40" loading="lazy">
     <nav><a href="french/">French course</a><a href="https://www.youtube.com/@French-WithCoco" target="_blank" rel="noopener">YouTube</a><a href="privacy/">Privacy Policy</a><a href="terms/">Terms of Service</a><a href="mailto:languageswithcoco@gmail.com">Contact</a></nav>
   </div>
 </footer>
 
+<script src="assets/brand/signup-config.js"></script>
+<script src="assets/brand/signup.js" defer></script>
 <script>
 (function () {
   var hellos = [["Bonjour !", "French", "fr-FR"], ["Hello!", "English", "en-GB"], ["¡Hola!", "Spanish", "es-ES"], ["Hallo!", "German", "de-DE"], ["Ciao!", "Italian", "it-IT"], ["Olá!", "Portuguese", "pt-PT"], ["مرحبًا!", "Arabic", "ar"]];
