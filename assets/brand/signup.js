@@ -26,8 +26,14 @@
       var done = function () { b.classList.add("su-done"); msg.textContent = t2.ok; msg.className = "su-msg good"; f.remove(); };
       var fail = function () { msg.textContent = t2.err; msg.className = "su-msg bad"; f.querySelector("button").disabled = false; };
       if (cfg.type === "mailerlite") {
-        var fd = new FormData(); fd.append("fields[email]", email); fd.append("ml-submit", "1");
-        fetch(cfg.url, { method: "POST", body: fd, mode: "no-cors" }).then(done, fail);
+        var fd = new FormData(); fd.append("fields[email]", email); fd.append("ml-submit", "1"); fd.append("anticsrf", "true");
+        fetch(cfg.url, { method: "POST", body: fd })
+          .then(function (r) { return r.json(); })
+          .then(function (j) {
+            if (j && j.success) done();
+            else if (j && j.errors && j.errors.fields && j.errors.fields.email) { fail(); msg.textContent = t2.bad; }
+            else fail();
+          }, fail);
       } else {
         fetch(cfg.url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: email, lang: ar() ? "ar" : "en", source: location.pathname }) })
           .then(function (r) { if (r.ok) done(); else fail(); }, fail);
