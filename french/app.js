@@ -82,7 +82,7 @@
     s.lessons = s.lessons || {}; s.days = s.days || []; s.lang = s.lang || "en";
     return s;
   }
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function save(quiet) { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} if (!quiet && window.CocoAccount) window.CocoAccount.dirty(); }
   function rec(code) { return state.lessons[code] || (state.lessons[code] = {}); }
   function touchDay() {
     var d = new Date().toISOString().slice(0, 10);
@@ -409,6 +409,7 @@
     document.getElementById("langBtn").textContent = isAr ? "English" : "العربية";
     document.querySelectorAll("[data-t]").forEach(function (el) { el.textContent = t(el.getAttribute("data-t")); });
     if (window.CocoSignup) window.CocoSignup.refresh();
+    if (window.CocoAccount) window.CocoAccount.paint();
   }
 
   document.addEventListener("click", function (e) {
