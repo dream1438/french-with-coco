@@ -35,7 +35,9 @@
       arNote: "", levelSoon: "Coming later",
       extrasTitle: "Coco Plus is coming later", extrasText: "Extra practice packs and live classes may come here later. All lessons stay free on YouTube.",
       unit: "Unit", min: "min", noVoice: "Your browser has no French voice. Try Chrome or Edge.",
-      bonusAbout: "Real conversation", listenFirst: "Press Play to hear the sentence."
+      bonusAbout: "Real conversation", listenFirst: "Press Play to hear the sentence.",
+      eyebrow: "Beginner A1 · free", tapCoco: "Tap Coco", todayStart: "Ready for your first lesson?", todayNext: "Up next", todayDone: "You finished A1. Bravo !",
+      lessonsLeft: function (n) { return n + (n === 1 ? " lesson" : " lessons") + " to finish A1"; }, nextBadge: "Next", path: "Your A1 path", lessonProg: "lesson progress"
     },
     ar: {
       navLessons: "الدروس", navProgress: "تقدّمي", footer: "دروس مجانية على يوتيوب.",
@@ -64,7 +66,9 @@
       levelSoon: "لاحقًا",
       extrasTitle: "كوكو بلس قريبًا", extrasText: "قد تأتي هنا لاحقًا حزم تمارين إضافية ودروس مباشرة. تبقى كل الدروس مجانية على يوتيوب.",
       unit: "الوحدة", min: "دقيقة", noVoice: "متصفحك لا يحتوي على صوت فرنسي. جرّب Chrome أو Edge.",
-      bonusAbout: "محادثة حقيقية", listenFirst: "اضغط «استمع» لتسمع الجملة."
+      bonusAbout: "محادثة حقيقية", listenFirst: "اضغط «استمع» لتسمع الجملة.",
+      eyebrow: "مبتدئ A1 · مجاني", tapCoco: "اضغط على كوكو", todayStart: "جاهز لدرسك الأول؟", todayNext: "التالي", todayDone: "أنهيت المستوى A1. Bravo !",
+      lessonsLeft: function (n) { return "باقي " + n + " درسًا لإنهاء A1"; }, nextBadge: "التالي", path: "مسارك في A1", lessonProg: "تقدّم الدرس"
     }
   };
 
@@ -101,7 +105,12 @@
   function nextLesson() { for (var i = 0; i < LESSONS.length; i++) if (!isDone(LESSONS[i].code)) return LESSONS[i]; return null; }
   function doneCount() { return LESSONS.filter(function (l) { return isDone(l.code); }).length; }
   function lessonNo(l) { return t("lesson") + " " + l.n; }
-  function coco(cls) { return '<img class="' + (cls || "") + '" src="assets/coco.svg" alt="Coco">'; }
+  function coco(cls, look) { return '<img class="' + (cls || "") + '" src="assets/coco/' + (look || "default") + '.svg" alt="Coco">'; }
+  function lessonSteps(code) {
+    var r = state.lessons[code] || {}, g = GM();
+    return [!!r.watched, g ? g.gamesPlayed(code) >= 2 : !!r.words, (r.quizBest || 0) >= PASS, !!r.sheet];
+  }
+  function ring(pct, cls) { return '<div class="ring ' + (cls || "") + '" style="--p:' + pct + '"><b>' + pct + "%</b></div>"; }
 
   /* French voice for words and listening questions */
   var frVoice = null;
@@ -133,9 +142,13 @@
     var nl = nextLesson(), dc = doneCount();
     var cta = nl ? '<a class="btn" href="#/lesson/' + nl.code + '">▶ ' + (dc || (state.lessons[nl.code]) ? t("cont") + nl.n : t("start")) + "</a>"
       : '<a class="btn" href="#/lesson/A1-01">' + t("allDone") + "</a>";
-    var h = '<section class="hero"><div><h1>' + t("heroTitle") + "</h1><p>" + t("heroText") + "</p>" + cta + "</div>" + coco("coco") + "</section>";
-    var pct = Math.round(dc / LESSONS.length * 100);
-    h += '<div class="summary"><b>' + t("doneOf")(dc, LESSONS.length) + '</b><div class="bar" aria-hidden="true"><i style="width:' + pct + '%"></i></div><b>' + pct + "%</b>" + (GM() && GM().dueCount() ? '<a class="btn small" href="#/review">🃏 ' + GM().t("reviewDue")(GM().dueCount()) + "</a>" : "") + "</div>";
+    var h = '<section class="hero"><div><span class="eyebrow"><span class="tri" aria-hidden="true"><i></i><i></i><i></i></span>' + t("eyebrow") + "</span><h1>" + t("heroTitle") + "</h1><p>" + t("heroText") + "</p></div>" +
+      '<div class="hstage"><button class="cstack" type="button" data-act="cocoSay" aria-label="' + t("tapCoco") + '">' + coco("", "wave") + coco("blink", "blink") + '</button><div class="hsay" id="hsay" aria-live="polite"><span class="fr">Bonjour !</span><small>' + pick("Hello!", "مرحبًا!") + '</small></div><span class="htap">' + t("tapCoco") + " 👆</span></div></section>";
+    var pct = Math.round(dc / LESSONS.length * 100), gm = GM();
+    var chips = '<span>✅ ' + t("doneOf")(dc, LESSONS.length) + "</span>" + (gm ? "<span>🔥 " + gm.stats().streak + " " + gm.t("streak") + "</span><span>⭐ " + gm.stats().xp + " XP</span>" : "") +
+      (gm && gm.dueCount() ? '<a href="#/review">🃏 ' + gm.t("reviewDue")(gm.dueCount()) + "</a>" : "");
+    h += '<section class="today">' + ring(pct) + "<div><h2>" + (nl ? (dc || state.lessons[nl.code] ? t("todayNext") + ": " : "") + lessonNo(nl) + " · " + fr(nl.titleFr) : t("todayDone")) + "</h2><p>" +
+      (nl ? (dc || state.lessons[nl.code] ? t("lessonsLeft")(LESSONS.length - dc) : t("todayStart")) : "") + '</p><div class="chips">' + chips + "</div></div>" + cta + "</section>";
     h += '<div class="levels" role="tablist">' +
       '<button class="on" role="tab" aria-selected="true">A1 <small>' + pick("Beginner", "مبتدئ") + "</small></button>" +
       ["A2", "B1", "B2", "C1"].map(function (lv) { return '<button role="tab" aria-selected="false" disabled>' + lv + " <small>" + t("levelSoon") + "</small></button>"; }).join("") + "</div>";
@@ -151,7 +164,7 @@
       bonusAfter(l.code).forEach(function (b) { h += bonusCard(b); });
     });
     h += "</div>";
-    h += '<div class="extras">' + coco() + "<div><b>" + t("extrasTitle") + "</b><br><span style='opacity:.9'>" + t("extrasText") + "</span></div></div>";
+    h += '<div class="extras">' + coco("", "wink") + "<div><b>" + t("extrasTitle") + "</b><br><span style='opacity:.9'>" + t("extrasText") + "</span></div></div>";
     return h;
   }
   function lessonCard(l, isNext) {
@@ -160,22 +173,27 @@
     if (!lk.video) meta += '<span class="pill soon">' + t("soon") + "</span>";
     if (r.quizBest != null) meta += '<span class="pill score">' + t("quiz") + " " + r.quizBest + "%</span>";
     meta += '<span class="pill">⏱ ' + esc(l.length.replace("min", t("min"))) + "</span>";
+    var st = lessonSteps(l.code), sp = Math.round(st.filter(Boolean).length / 4 * 100);
+    var thumb = '<div class="thumb"' + (isNext ? ' data-next="' + esc(t("nextBadge")) + '"' : "") + ">" + (lk.video ? '<img class="yt" loading="lazy" alt="" src="https://i.ytimg.com/vi/' + esc(lk.video) + '/mqdefault.jpg"><span class="play">▶</span>' : coco("cc", l.n % 3 === 0 ? "wink" : l.n % 3 === 1 ? "think" : "default") + '<span class="soonb">' + t("soon") + "</span>") +
+      '<span class="lnum">' + l.n + "</span></div>";
     return '<a class="card lcard' + (isNext ? " next" : "") + '" href="#/lesson/' + l.code + '">' +
-      (done ? '<span class="check" aria-label="' + t("done") + '">✓</span>' : "") +
-      '<div class="row"><span class="num">' + l.n + "</span><div><h3>" + fr(l.titleFr) + "</h3></div></div>" +
+      (done ? '<span class="check" aria-label="' + t("done") + '">✓</span>' : "") + thumb +
+      '<div class="body"><h3>' + fr(l.titleFr) + "</h3>" +
       '<div class="en">' + esc(pick(l.titleEn, l.titleAr)) + "</div>" +
-      '<div class="meta">' + meta + "</div></a>";
+      '<div class="meta">' + meta.replace('<span class="pill soon">' + t("soon") + "</span>", "") + "</div>" +
+      (sp && !done ? '<div class="bar mini" aria-label="' + t("lessonProg") + '"><i style="width:' + sp + '%"></i></div>' : "") + "</div></a>";
   }
   function bonusCard(b) {
     var r = state.lessons[b.code] || {};
-    return '<a class="card lcard bonus" href="#/bonus/' + b.code + '">' + (r.watched ? '<span class="check">✓</span>' : "") +
-      '<div class="row"><span class="num">🎁</span><div><h3>' + fr(b.titleFr) + "</h3></div></div>" +
-      '<div class="en">' + t("bonus") + " · " + esc(pick(b.titleEn, b.titleAr)) + "</div>" +
-      '<div class="meta">' + (b.video ? "" : '<span class="pill soon">' + t("soon") + "</span>") + '<span class="pill">' + t("bonusAbout") + "</span></div></a>";
+    var thumb = '<div class="thumb">' + (b.video ? '<img class="yt" loading="lazy" alt="" src="https://i.ytimg.com/vi/' + esc(b.video) + '/mqdefault.jpg"><span class="play">▶</span>' : coco("cc", "laugh") + '<span class="soonb">' + t("soon") + "</span>") + '<span class="lnum">🎁 ' + t("bonus") + "</span></div>";
+    return '<a class="card lcard bonus" href="#/bonus/' + b.code + '">' + (r.watched ? '<span class="check">✓</span>' : "") + thumb +
+      '<div class="body"><h3>' + fr(b.titleFr) + "</h3>" +
+      '<div class="en">' + esc(pick(b.titleEn, b.titleAr)) + "</div>" +
+      '<div class="meta"><span class="pill">' + t("bonusAbout") + "</span></div></div></a>";
   }
 
   function videoBox(id) {
-    if (!id) return '<div class="video soon"><div>' + coco() + "<p>" + t("soonVideo") + "</p></div></div>";
+    if (!id) return '<div class="video soon"><div>' + coco("", "think") + "<p>" + t("soonVideo") + "</p></div></div>";
     return '<button class="video poster" data-play="' + esc(id) + '" style="background-image:url(https://i.ytimg.com/vi/' + esc(id) + '/hqdefault.jpg),linear-gradient(160deg,#3a1766,#7a2f6b)" aria-label="' + t("watch") + '">' +
       coco("pcoco") + '<span class="pbtn">▶</span><span class="plabel">' + t("watch") + "</span></button>";
   }
@@ -201,13 +219,13 @@
     if (tab === "words") { r.words = true; touchDay(); save(); }
 
     var h = '<div class="crumbs"><a href="#/">A1</a> · ' + t("unit") + " " + esc(l.unit) + "</div>";
-    h += '<div class="lhead"><h1>' + lessonNo(l) + ": " + fr(l.titleFr) + '</h1><div class="sub">' + esc(pick(l.titleEn, l.titleAr)) + "</div></div>";
+    h += '<div class="lhead"><span class="tag">' + lessonNo(l) + " · ⏱ " + esc(l.length.replace("min", t("min"))) + "</span><h1>" + fr(l.titleFr) + '</h1><div class="sub">' + esc(pick(l.titleEn, l.titleAr)) + "</div></div>";
     h += '<div class="layout"><div>' + videoBox(lk.video) + "</div>";
     // side panel
     var steps = [[r.watched, t("stepWatch")], [GM() ? GM().gamesPlayed(code) >= 2 : r.words, GM() ? GM().stepLabel() : t("stepWords")], [(r.quizBest || 0) >= PASS, t("stepQuiz")], [r.sheet, t("stepSheet")]];
     h += '<aside class="side"><div class="card"><h3>' + t("yourSteps") + '</h3><ul class="steps">' +
       steps.map(function (s, i) { return '<li class="' + (s[0] ? "ok" : "") + '"><span class="dot">' + (s[0] ? "✓" : i + 1) + "</span>" + s[1] + "</li>"; }).join("") +
-      '</ul><div class="actions" style="margin-top:14px">' +
+      '</ul><div class="lprog"><div class="bar"><i style="width:' + Math.round(steps.filter(function (s) { return s[0]; }).length / 4 * 100) + '%"></i></div><b>' + Math.round(steps.filter(function (s) { return s[0]; }).length / 4 * 100) + '%</b></div><div class="actions" style="margin-top:14px">' +
       (lk.video ? '<button class="btn small ' + (r.watched ? "ghost" : "navy") + '" data-act="watched">' + (r.watched ? "✓ " + t("watchedYes") : t("watched")) + "</button>" : "") +
       '<a class="btn small" href="#/quiz/' + code + '">' + (r.quizBest != null ? t("retake") + " (" + r.quizBest + "%)" : t("takeQuiz")) + "</a>" +
       "</div></div>";
@@ -281,7 +299,8 @@
     var pct = Math.round(quiz.i / n * 100);
     var h = '<div class="quiz"><div class="crumbs"><a href="#/lesson/' + code + '">' + lessonNo(l) + ": " + esc(l.titleFr) + "</a></div>";
     h += '<div class="qtop"><b>' + t("qOf")(quiz.i + 1, n) + '</b><div class="bar"><i style="width:' + pct + '%"></i></div></div>';
-    h += '<div class="card qcard">';
+    var look = quiz.answered ? (quiz.picked === q.answer ? "laugh" : "oops") : (q.kind === "listen" ? "surprised" : "think");
+    h += '<div class="card qcard">' + coco("qcoco" + (quiz.answered ? (quiz.picked === q.answer ? " bounce" : " shake") : ""), look);
     if (q.kind === "listen") {
       h += '<div class="qkind">🎧 ' + t("kListen") + '</div><p class="hint">' + t("listenFirst") + ' <span id="voiceNote"></span></p><button class="play" data-say="' + esc(q.say) + '">🔊 ' + t("play") + "</button>";
     } else if (q.kind === "fill") {
@@ -293,7 +312,7 @@
       var label = q.kind === "listen" ? pick(o, q.optionsAr && q.optionsAr[i]) : o;
       var cls = "opt";
       if (quiz.answered) { if (i === q.answer) cls += " right"; else if (i === quiz.picked) cls += " wrong"; }
-      return '<button class="' + cls + '" data-opt="' + i + '"' + (quiz.answered ? " disabled" : "") + (q.kind === "listen" ? "" : ' lang="fr"') + ">" + esc(label) + "</button>";
+      return '<button class="' + cls + '" data-opt="' + i + '"' + (quiz.answered ? " disabled" : "") + (q.kind === "listen" ? "" : ' lang="fr"') + '><span class="key" aria-hidden="true">' + "ABCDEF".charAt(i) + "</span>" + esc(label) + "</button>";
     }).join("") + "</div>";
     if (quiz.answered) {
       var ok = quiz.picked === q.answer;
@@ -308,7 +327,8 @@
     var n = quiz.items.length, pct = Math.round(quiz.score / n * 100), r = rec(l.code);
     if (!quiz.saved) { r.quizBest = Math.max(r.quizBest || 0, pct); r.quizLast = pct; touchDay(); save(); quiz.saved = true; if (GM()) GM().onQuizDone(pct); }
     var next = LESSONS[LESSONS.indexOf(l) + 1];
-    return '<div class="quiz"><div class="card result">' + coco() + "<p>" + t("score") + '</p><div class="big">' + quiz.score + " / " + n + "</div><p>" +
+    if (pct >= PASS && !quiz.party) { quiz.party = true; setTimeout(confetti, 150); }
+    return '<div class="quiz"><div class="card result">' + coco(pct >= PASS ? "jump" : "", pct >= PASS ? "proud" : "oops") + "<p>" + t("score") + "</p>" + ring(pct, "scorering") + '<div class="big">' + quiz.score + " / " + n + "</div><p>" +
       (pct >= PASS ? t("passed") : t("failed")) + '</p><div class="actions" style="justify-content:center">' +
       '<a class="btn ghost" href="#/lesson/' + l.code + '">' + t("backLesson") + "</a>" +
       '<button class="btn ghost" data-act="again">' + t("retake") + "</button>" +
@@ -323,6 +343,10 @@
     h += '<div class="stats">' + [[dc + "/" + LESSONS.length, t("stLessons")], [avg, t("stQuiz")], [state.days.length, t("stDays")], [words, t("stWords")]].concat(GM() ? [["⭐ " + GM().stats().xp, "XP"], ["🔥 " + GM().stats().streak, GM().t("streak")]] : []).map(function (s) {
       return '<div class="card stat"><div class="n">' + s[0] + '</div><div class="l">' + s[1] + "</div></div>";
     }).join("") + "</div>";
+    h += '<div class="card" style="margin-bottom:16px"><h3 style="margin-bottom:10px">' + t("path") + '</h3><div class="lpath">' + LESSONS.map(function (l) {
+      var c = isDone(l.code) ? "done" : lessonSteps(l.code).some(Boolean) ? "part" : "";
+      return '<a class="' + c + '" href="#/lesson/' + l.code + '" title="' + esc(l.titleFr) + '">' + l.n + "</a>";
+    }).join("") + "</div></div>";
     if (GM()) h += GM().progressHtml();
     h += '<div class="card"><table class="ptable"><thead><tr><th>' + t("colLesson") + "</th><th>" + t("colVideo") + "</th><th>" + t("colQuiz") + "</th><th></th></tr></thead><tbody>" +
       LESSONS.map(function (l) {
@@ -347,6 +371,7 @@
     if (page !== "quiz") quiz = null;
     if (page !== "play" && page !== "review" && GM()) GM().reset();
     if (GM()) GM().hud();
+    document.body.setAttribute("data-page", page);
     app.innerHTML = html;
     document.querySelectorAll("[data-nav]").forEach(function (a) { a.classList.toggle("on", a.getAttribute("data-nav") === (page === "progress" ? "progress" : "home")); });
   }
@@ -362,7 +387,12 @@
     var el = e.target.closest("[data-play],[data-say],[data-opt],[data-act],[data-tab]");
     if (!el) return;
     if (el.hasAttribute("data-play")) { playVideo(el, el.getAttribute("data-play")); return; }
-    if (el.hasAttribute("data-say")) { say(el.getAttribute("data-say")); return; }
+    if (el.hasAttribute("data-say")) {
+      say(el.getAttribute("data-say"));
+      if (el.classList.contains("word")) { el.classList.remove("speaking"); void el.offsetWidth; el.classList.add("speaking"); setTimeout(function () { el.classList.remove("speaking"); }, 1600); }
+      return;
+    }
+    if (el.getAttribute("data-act") === "cocoSay") { cocoSay(); return; }
     var parts = location.hash.replace(/^#\/?/, "").split("/"), code = parts[1];
     if (el.hasAttribute("data-tab")) { location.hash = "#/lesson/" + code + "/" + el.getAttribute("data-tab"); return; }
     if (el.hasAttribute("data-opt")) {
@@ -380,6 +410,28 @@
     else if (act === "again") { startQuiz(code); render(); }
     else if (act === "reset") { if (confirm(t("resetAsk"))) { var lang = state.lang; state = { lessons: {}, days: [], lang: lang }; save(); render(); } }
   });
+  function cocoSay() {
+    var pool = [];
+    LESSONS.slice(0, Math.max(3, doneCount() + 2)).forEach(function (l) { l.vocab.forEach(function (g) { g.items.forEach(function (i) { pool.push(i); }); }); });
+    var w = pool[Math.floor(Math.random() * pool.length)], b = document.getElementById("hsay");
+    if (!w || !b) return;
+    b.innerHTML = '<span class="fr" lang="fr">' + esc(w.fr) + "</span><small>" + esc(pick(w.en, w.ar)) + "</small>";
+    b.style.animation = "none"; void b.offsetWidth; b.style.animation = "";
+    say(w.fr);
+  }
+  function confetti() {
+    if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var box = document.createElement("div"), cols = ["#FFD45C", "#F4B73A", "#0055A4", "#EF4135", "#7B4DFF", "#FF9A62", "#ffffff"];
+    box.className = "confetti";
+    for (var i = 0; i < 70; i++) {
+      var c = document.createElement("i");
+      c.style.left = Math.random() * 100 + "%"; c.style.background = cols[i % cols.length];
+      c.style.animationDelay = Math.random() * .6 + "s"; c.style.animationDuration = 1.4 + Math.random() * 1.2 + "s";
+      box.appendChild(c);
+    }
+    document.body.appendChild(box);
+    setTimeout(function () { box.remove(); }, 3400);
+  }
   document.getElementById("langBtn").addEventListener("click", function () { state.lang = ar() ? "en" : "ar"; save(); applyLang(); render(); });
   window.addEventListener("hashchange", function () { render(); if (!/\/(words|grammar|dialogue|recap)$/.test(location.hash)) window.scrollTo(0, 0); });
 

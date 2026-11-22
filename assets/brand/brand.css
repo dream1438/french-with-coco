@@ -1,0 +1,19 @@
+/* Languages with Coco: shared brand layer (fonts + tokens). From brand/coco-identity v1.1. */
+@font-face{font-family:"Baloo 2";font-weight:600;font-display:swap;src:url(fonts/baloo-2-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Baloo 2";font-weight:800;font-display:swap;src:url(fonts/baloo-2-latin-800-normal.woff2) format("woff2")}
+@font-face{font-family:"Baloo 2";font-weight:800;font-display:swap;src:url(fonts/baloo-2-latin-ext-800-normal.woff2) format("woff2");unicode-range:U+0100-024F,U+1E00-1EFF,U+20A0-20CF,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:Nunito;font-weight:700;font-display:swap;src:url(fonts/nunito-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:Nunito;font-weight:800;font-display:swap;src:url(fonts/nunito-latin-800-normal.woff2) format("woff2")}
+@font-face{font-family:Nunito;font-weight:900;font-display:swap;src:url(fonts/nunito-latin-900-normal.woff2) format("woff2")}
+@font-face{font-family:Nunito;font-weight:700;font-display:swap;src:url(fonts/nunito-latin-ext-700-normal.woff2) format("woff2");unicode-range:U+0100-024F,U+1E00-1EFF,U+20A0-20CF,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:Nunito;font-weight:800;font-display:swap;src:url(fonts/nunito-latin-ext-800-normal.woff2) format("woff2");unicode-range:U+0100-024F,U+1E00-1EFF,U+20A0-20CF,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:Nunito;font-weight:900;font-display:swap;src:url(fonts/nunito-latin-ext-900-normal.woff2) format("woff2");unicode-range:U+0100-024F,U+1E00-1EFF,U+20A0-20CF,U+2C60-2C7F,U+A720-A7FF}
+:root{
+  --coco-yellow:#FFD45C;--coco-gold:#F4B73A;--coco-cream:#FFF1C4;--coco-navy:#24305E;--coco-ink:#1D1640;--coco-gold-text:#9A6700;
+  --bg-night:linear-gradient(135deg,#141B3D,#3B2A8C);
+  --bg-sunny:linear-gradient(135deg,#FFF6DA,#FFD98A);
+  --bg-ocean:linear-gradient(135deg,#0B3A5B,#1B8A9C);
+  --bg-coral:linear-gradient(135deg,#3A1C5C,#FF7A59);
+  --bg-sunrise:linear-gradient(135deg,#2B1055,#D3546B);
+  --dots:radial-gradient(rgba(255,255,255,.13) 1.2px,transparent 1.3px) 0 0/22px 22px;
+}

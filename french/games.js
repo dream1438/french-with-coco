@@ -101,12 +101,14 @@
   /* ---------------- Coco buddy (reacts in the corner) ---------------- */
   var buddy = document.createElement("div");
   buddy.className = "buddy";
-  buddy.innerHTML = '<div class="bub" role="status" aria-live="polite"></div><img src="assets/coco.svg" alt="Coco">';
+  buddy.innerHTML = '<div class="bub" role="status" aria-live="polite"></div><img src="assets/coco/default.svg" alt="Coco">';
   document.body.appendChild(buddy);
+  ["happy", "proud", "oops", "think", "laugh"].forEach(function (n) { var im = new Image(); im.src = "assets/coco/" + n + ".svg"; });
   var buddyTimer = null;
   G.react = function (mood, text) {
     var img = buddy.querySelector("img"), bub = buddy.querySelector(".bub");
     buddy.classList.add("show");
+    img.src = "assets/coco/" + ({ happy: "happy", win: "proud", sad: "oops", think: "think" }[mood] || "default") + ".svg";
     img.className = ""; void img.offsetWidth; img.className = "m-" + mood;
     bub.textContent = text || ""; bub.style.display = text ? "block" : "none";
     clearTimeout(buddyTimer);
@@ -240,7 +242,7 @@
     return "";
   }
   function endBox(l, title, extra) {
-    return '<div class="card result">' + A.coco("jump") + "<h2>" + title + "</h2>" + (extra || "") +
+    return '<div class="card result">' + A.coco("jump", "laugh") + "<h2>" + title + "</h2>" + (extra || "") +
       '<div class="actions" style="justify-content:center;margin-top:14px"><button class="btn" data-g="again">' + t("again") + "</button>" +
       (l ? '<a class="btn ghost" href="#/lesson/' + l.code + '">' + t("backLesson") + "</a>" : '<a class="btn ghost" href="#/">' + t("backLesson") + "</a>") + "</div></div>";
   }
