@@ -29,6 +29,20 @@ jobs:
       - name: Build the test app (APK)
         run: cd android && ./gradlew --no-daemon assembleDebug
       - run: mkdir -p ../out && cp android/app/build/outputs/apk/debug/app-debug.apk ../out/french-with-coco-test.apk
+      - name: Build the Google Play bundle (only when the upload key is in GitHub secrets)
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          APP_VERSION_CODE: ${{ github.run_number }}
+        run: |
+          if [ -z "$KS_B64" ]; then echo "No upload key yet: skipping the Play bundle."; exit 0; fi
+          echo "$KS_B64" | base64 -d > "$RUNNER_TEMP/upload.jks"
+          export ANDROID_KEYSTORE_FILE="$RUNNER_TEMP/upload.jks"
+          (cd android && ./gradlew --no-daemon bundleRelease)
+          cp android/app/build/outputs/bundle/release/app-release.aab ../out/french-with-coco-play.aab
+          rm -f "$RUNNER_TEMP/upload.jks"
       - name: Enable KVM
         working-directory: .
         run: |
@@ -68,9 +82,27 @@ jobs:
       - uses: actions/upload-artifact@v4
         with: { name: ios, path: out/ }
 
+  store-screens:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults: { run: { working-directory: mobile } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci && npm i --no-save playwright@1 && npx playwright install --with-deps chromium
+      - name: Store screenshots (Google Play 1080x2160, App Store 1290x2796) and feature graphic
+        run: |
+          node scripts/copy-web.js
+          (cd www && python3 -m http.server 8799 >/dev/null 2>&1 &)
+          sleep 2
+          node store/make-screens.js 8799 ../out/store
+      - uses: actions/upload-artifact@v4
+        with: { name: store, path: out/ }
+
   publish:
-    needs: [android, ios]
-    if: always() && (needs.android.result == 'success' || needs.ios.result == 'success')
+    needs: [android, ios, store-screens]
+    if: always() && (needs.android.result == 'success' || needs.ios.result == 'success' || needs['store-screens'].result == 'success')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
@@ -83,5 +115,5 @@ jobs:
           gh release view app-preview >/dev/null 2>&1 || gh release create app-preview --prerelease --target "${{ github.sha }}" \
             --title "Coco app test build (not in the stores)" \
             --notes "Test builds of the Learn French with Coco phone apps, made automatically from the repo. Android: download the .apk on an Android phone and open it (allow installing from this source). iPhone screenshots come from the iPhone simulator."
-          gh release upload app-preview --clobber $(find dl -type f)
+          gh release upload app-preview --clobber $(find dl -type f ! -name '*.aab')
           gh release edit app-preview --notes "Built from ${GITHUB_REF_NAME} @ ${GITHUB_SHA::7} on $(date -u '+%Y-%m-%d %H:%M UTC'). Android: download french-with-coco-test.apk on an Android phone and open it (allow installing from this source). Screenshots: android-*.png (Android emulator), iphone-*.png (iPhone simulator)."

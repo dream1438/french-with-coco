@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const root = path.resolve(__dirname, "..", "..");
 const www = path.resolve(__dirname, "..", "www");
-const parts = ["french", "assets", "privacy", "terms"];
+const parts = ["french", "assets", "privacy", "terms", "delete-account"];
 fs.rmSync(www, { recursive: true, force: true });
 fs.mkdirSync(www, { recursive: true });
 for (const p of parts) fs.cpSync(path.join(root, p), path.join(www, p), { recursive: true });

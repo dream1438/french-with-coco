@@ -30,3 +30,18 @@ simulator build, takes screenshots on both, and puts them on the `app-preview` p
   sign-in only until **Sign in with Apple** is added (Apple requires it next to Google sign-in); set
   `apple: true` in `french/data/db-config.js` once it is on.
 - Supabase: `com.languageswithcoco.french://auth` must be in Authentication > URL Configuration > Redirect URLs.
+
+## Store material
+`mobile/store/listing.md` (English + Arabic texts, Data safety / App Privacy answers) and
+`mobile/store/make-screens.js` (store screenshots + Play feature graphic, made by the workflow).
+
+## Release builds
+- Android: the workflow also builds a signed Play bundle (`.aab`, kept as a workflow artifact, not on the public
+  pre-release) once the GitHub secrets `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`,
+  `ANDROID_KEY_PASSWORD` exist. Version code = workflow run number.
+- iPhone: iPhone only (no iPad). Store builds need the Apple Developer account (signing certificate + profile).
+
+## Accounts
+Delete account: `supabase/delete_account.sql` adds `delete_my_account()`; the account window shows
+"Delete my account". Sign in with Apple: turn on the Apple provider in Supabase, then `apple: true` in
+`french/data/db-config.js` (this also shows Google sign-in on iPhone).
