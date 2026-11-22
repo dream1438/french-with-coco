@@ -4,5 +4,5 @@ window.COCO_DB = {
   url: "https://ufrqegiqqcjhuztgexvm.supabase.co",
   key: "sb_publishable_aRIMJ3cewfaHA3_dXQLtwQ_XqI4owGv",
   language: "fr",
-  google: false   // set to true once Google sign-in is switched on in Supabase
+  google: true   // Google sign-in is switched on in Supabase (2026-11-22)
 };
