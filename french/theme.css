@@ -15,6 +15,7 @@ body[data-page=quiz]::before,body[data-page=play]::before,body[data-page=review]
 .topnav a{font-size:15px}
 .topnav a.on{background:rgba(255,255,255,.18)}
 @media (max-width:640px){.brand img.logo{height:40px}}
+@media (max-width:440px){.brand img.logo{width:40px;height:40px;object-fit:cover;object-position:0 50%}}
 
 /* hero */
 .hero{padding:20px 0 26px;gap:22px}
@@ -179,3 +180,33 @@ main#app{min-height:100vh}
 .foot img{width:auto}
 #app .lcard .thumb img.cc{height:78%;width:auto}
 .su-wrap{max-width:1100px;margin:30px auto 0;padding:0 16px}
+
+/* ---------- learner accounts ---------- */
+.acct-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.16);color:#fff;border:1.5px solid rgba(255,255,255,.55);border-radius:999px;padding:7px 14px;font:800 14px/1 Nunito,Cairo,sans-serif;cursor:pointer;white-space:nowrap}
+.acct-btn:hover{background:rgba(255,255,255,.26)}
+.acct-btn.in{padding:3px;border-color:var(--coco-yellow,#FFC83D);background:transparent}
+.acct-av{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--coco-yellow,#FFC83D);color:var(--coco-navy,#25305E);font:800 15px/1 "Baloo 2",Nunito,sans-serif}
+.acct-modal{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:16px;background:rgba(20,22,48,.55);backdrop-filter:blur(3px)}
+.acct-modal[hidden]{display:none}
+body.acct-open{overflow:hidden}
+.acct-card{position:relative;width:min(400px,100%);background:#fff;color:#1D1640;border-radius:26px;padding:26px 24px 20px;text-align:center;box-shadow:0 24px 60px rgba(20,27,61,.3);animation:acctIn .22s ease-out}
+@keyframes acctIn{from{transform:translateY(12px) scale(.98);opacity:0}to{transform:none;opacity:1}}
+.acct-card img{display:block;margin:-6px auto 4px;height:auto}
+.acct-card h2{font:800 26px/1.15 "Baloo 2",Nunito,sans-serif;margin:4px 0 6px}
+.acct-card p{margin:0 0 16px;color:#4B4670;font-size:15px;line-height:1.45}
+.acct-card .btn{width:100%;justify-content:center}
+.acct-x{position:absolute;top:10px;inset-inline-end:12px;width:34px;height:34px;border:0;border-radius:50%;background:#F4F1FA;color:#4B4670;font-size:22px;line-height:1;cursor:pointer}
+.acct-google{background:#fff;color:#1D1640;border:2px solid #E4E0F0;box-shadow:none}
+.acct-google span{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:conic-gradient(#EA4335 0 25%,#FBBC05 0 50%,#34A853 0 75%,#4285F4 0);color:#fff;font:900 13px/1 Arial,sans-serif;margin-inline-end:6px}
+.acct-or{display:flex;align-items:center;gap:10px;color:#8C88A8;font-size:13px;margin:14px 0}
+.acct-or::before,.acct-or::after{content:"";flex:1;height:1px;background:#E8E4F2}
+.acct-form{display:grid;gap:10px}
+.acct-form input{width:100%;box-sizing:border-box;padding:13px 16px;border:2px solid #E4E0F0;border-radius:999px;font:600 16px Nunito,Cairo,sans-serif;color:#1D1640}
+.acct-form input:focus{outline:none;border-color:var(--coco-navy,#25305E)}
+.acct-msg{min-height:1px;margin:10px 0 0!important;font-weight:700}
+.acct-msg.good{color:#1E8A4C}.acct-msg.bad{color:#C0392B}
+.acct-note{display:block;color:#8C88A8;margin-top:8px}
+.acct-status{position:fixed;inset-inline:16px;bottom:18px;margin:auto;width:max-content;max-width:calc(100% - 32px);z-index:55;background:var(--coco-navy,#25305E);color:#fff;font-weight:800;padding:12px 18px;border-radius:999px;box-shadow:0 12px 30px rgba(20,27,61,.3)}
+.acct-status[hidden]{display:none}
+@media (max-width:640px){.acct-btn{padding:7px}.acct-btn .acct-tx{display:none}.acct-btn.in{padding:2px}.acct-av{width:28px;height:28px}}
+@media (max-width:400px){.topnav{gap:4px}.topnav .hud{gap:4px}.topnav .hud .chip{padding:6px 7px}}
