@@ -1,0 +1,21 @@
+# Hostinger (Apache) settings for languageswithcoco.com
+Options -Indexes
+
+RewriteEngine On
+# One address for everyone: https and no "www" (keeps sign-in and saved progress in one place)
+RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Never serve repo internals or tooling
+RewriteRule ^(\.git|tools|worker|supabase)(/|$) - [F,L]
+RewriteRule ^(PLAN\.md|README\.md|start-app\.ps1)$ - [F,L]
+
+# Pages always fresh; scripts/styles are versioned with ?v= in the HTML
+<IfModule mod_headers.c>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
