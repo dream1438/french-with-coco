@@ -96,9 +96,8 @@ export default {
           headers: {
             "Content-Type": req.headers.get("Content-Type") || "video/mp4",
             "Content-Range": req.headers.get("Content-Range") || "",
-            "Content-Length": req.headers.get("Content-Length") || "",
           },
-          body: req.body,
+          body: await req.arrayBuffer(), // chunks are ~10 MB, so buffering keeps Content-Length exact
         });
         return new Response(await r.text(), { status: r.status, headers: h });
       }
