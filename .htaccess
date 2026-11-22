@@ -10,7 +10,7 @@ RewriteCond %{HTTP:X-Forwarded-Proto} !=https
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # Never serve repo internals or tooling
-RewriteRule ^(\.git|tools|worker|supabase)(/|$) - [F,L]
+RewriteRule ^(\.git|\.github|tools|worker|supabase|mobile)(/|$) - [F,L]
 RewriteRule ^(PLAN\.md|README\.md|start-app\.ps1)$ - [F,L]
 
 # Pages always fresh; scripts/styles are versioned with ?v= in the HTML

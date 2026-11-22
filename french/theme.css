@@ -210,3 +210,6 @@ body.acct-open{overflow:hidden}
 .acct-status[hidden]{display:none}
 @media (max-width:640px){.acct-btn{padding:7px}.acct-btn .acct-tx{display:none}.acct-btn.in{padding:2px}.acct-av{width:28px;height:28px}}
 @media (max-width:400px){.topnav{gap:4px}.topnav .hud{gap:4px}.topnav .hud .chip{padding:6px 7px}}
+
+/* Phone apps (Android / iPhone): keep the header clear of the status bar / notch */
+.in-app .top{padding-top:calc(12px + max(env(safe-area-inset-top), var(--safe-area-inset-top, 0px)))}
