@@ -9,7 +9,7 @@ App icon 512x512 / 1024x1024: `mobile/assets/icon-only.png`.
 - **Developer name:** Languages with Coco
 - **Category:** Education
 - **Price:** Free. No ads, no in-app purchases.
-- **Contact email:** languageswithcoco@gmail.com
+- **Contact email:** hello@languageswithcoco.com
 - **Website:** https://languageswithcoco.com/french/
 - **Privacy policy:** https://languageswithcoco.com/privacy/
 - **Account deletion page:** https://languageswithcoco.com/delete-account/
