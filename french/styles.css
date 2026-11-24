@@ -268,3 +268,8 @@ html[dir=rtl] .buddy{flex-direction:row}
 .buddy.show{opacity:1;visibility:visible;transition:transform .35s cubic-bezier(.3,1.5,.6,1),opacity .2s}
 .opt[lang=fr],.mt.fr,.bubble .fr{direction:ltr;text-align:left;unicode-bidi:plaintext}
 html[dir=rtl] .opt[lang=fr]{text-align:left}
+/* Arabic mode: English-letter pronunciation guides don't help Arabic readers */
+html[lang="ar"] .pr{display:none}
+/* "video coming soon" box: grow to fit the text on narrow phones instead of cutting it off */
+.video.soon{aspect-ratio:auto;min-height:200px}
+@media (min-width:700px){.video.soon{aspect-ratio:16/9}}

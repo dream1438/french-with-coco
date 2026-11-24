@@ -421,7 +421,7 @@
     var c = cur, d = l.dialogue;
     var people = []; d.lines.forEach(function (x) { if (people.indexOf(x.who) < 0) people.push(x.who); });
     if (!c.role) {
-      return gameHead("🎭", t("gRole"), esc(d.heading)) + '<div class="card"><h3 style="margin-bottom:12px">' + t("roleChoose") + '</h3><div class="actions">' +
+      return gameHead("🎭", t("gRole"), esc(A.pick(d.heading, d.headingAr))) + '<div class="card"><h3 style="margin-bottom:12px">' + t("roleChoose") + '</h3><div class="actions">' +
         people.map(function (p) { return '<button class="btn" data-g="role" data-who="' + esc(p) + '">' + esc(p) + "</button>"; }).join("") +
         '</div><p class="note" style="margin-top:14px"><button class="linkbtn" data-g="hearall">🔊 ' + t("listenAll") + "</button></p></div>";
     }

@@ -10,7 +10,7 @@
   /* ---------------- text (English / Arabic) ---------------- */
   var T = {
     en: {
-      navLessons: "Lessons", navProgress: "My progress", footer: "Free lessons on YouTube.",
+      navLessons: "Lessons", navProgress: "My progress", footer: "Free lessons on YouTube.", privacy: "Privacy Policy", terms: "Terms of Service", contact: "Contact",
       heroTitle: "Learn French <em>with Coco</em>",
       heroText: "Short animated lessons, from your first Bonjour to real conversations. Watch, learn the words, take the quiz, and download the worksheet.",
       start: "Start lesson 1", cont: "Continue: lesson ", allDone: "Review the course",
@@ -40,7 +40,7 @@
       lessonsLeft: function (n) { return n + (n === 1 ? " lesson" : " lessons") + " to finish A1"; }, nextBadge: "Next", path: "Your A1 path", lessonProg: "lesson progress"
     },
     ar: {
-      navLessons: "الدروس", navProgress: "تقدّمي", footer: "دروس مجانية على يوتيوب.",
+      navLessons: "الدروس", navProgress: "تقدّمي", footer: "دروس مجانية على يوتيوب.", privacy: "سياسة الخصوصية", terms: "شروط الخدمة", contact: "تواصل معنا",
       heroTitle: "تعلّم الفرنسية <em>مع كوكو</em>",
       heroText: "دروس متحركة قصيرة، من أول Bonjour إلى محادثات حقيقية. شاهد الدرس، تعلّم الكلمات، حلّ الاختبار، وحمّل ورقة التمارين.",
       start: "ابدأ الدرس 1", cont: "تابع: الدرس ", allDone: "راجع الدورة",
@@ -80,6 +80,7 @@
     try { s = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
     s = s || {};
     s.lessons = s.lessons || {}; s.days = s.days || []; s.lang = s.lang || "en";
+    try { var ql = new URLSearchParams(location.search).get("lang"); if (ql === "ar" || ql === "en") s.lang = ql; } catch (e) {}
     return s;
   }
   function save(quiet) { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} if (!quiet && window.CocoAccount) window.CocoAccount.dirty(); }
@@ -94,7 +95,13 @@
   /* ---------------- helpers ---------------- */
   function t(k) { var v = T[state.lang][k]; return v === undefined ? T.en[k] : v; }
   function ar() { return state.lang === "ar"; }
-  function pick(en, arText) { return ar() && arText ? arText : en; }
+  function pick(en, arText) {
+    if (!ar()) return en;
+    if (arText) return arText;
+    var m = window.COURSE_AR;
+    return (m && en && m[en]) || en;
+  }
+  function unitName(u) { u = String(u || ""); var m = u.match(/^(\d+\.\d+)\s*(.*)$/); return m ? m[1] + " · " + pick(m[2]) : pick(u); }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function fr(s) { return '<span class="fr" lang="fr">' + esc(s) + "</span>"; }
   function link(code) { return LINKS.lessons[code] || {}; }
@@ -185,7 +192,7 @@
       if (l.unit !== unit) {
         if (unit !== null) h += "</div>";
         unit = l.unit;
-        h += '<h2 class="unit">' + t("unit") + " " + esc(unit.replace(/^(\d+\.\d+)\s*/, "$1 · ")) + '</h2><div class="grid">';
+        h += '<h2 class="unit">' + t("unit") + " " + esc(unitName(unit)) + '</h2><div class="grid">';
       }
       h += lessonCard(l, nl && nl.code === l.code);
       bonusAfter(l.code).forEach(function (b) { h += bonusCard(b); });
@@ -235,6 +242,7 @@
   function viewLesson(code, tab) {
     var l = byCode(code); if (!l) return viewHome();
     var lk = link(code), r = rec(code), idx = LESSONS.indexOf(l);
+    var vid = (ar() && lk.videoAr) || lk.video;
     var prev = LESSONS[idx - 1], next = LESSONS[idx + 1];
     var nWords = l.vocab.reduce(function (a, g) { return a + g.items.length; }, 0);
     var tabs = [];
@@ -242,12 +250,12 @@
     if (l.explain.length) tabs.push(["grammar", t("grammar")]);
     if (l.dialogue) tabs.push(["dialogue", t("dialogue")]);
     if (l.recap.length) tabs.push(["recap", t("recap")]);
-    tab = tab || (tabs[0] && tabs[0][0]);
+    if (!tabs.some(function (x) { return x[0] === tab; })) tab = tabs[0] && tabs[0][0];
     if (tab === "words") { r.words = true; touchDay(); save(); }
 
-    var h = '<div class="crumbs"><a href="#/">A1</a> · ' + t("unit") + " " + esc(l.unit) + "</div>";
+    var h = '<div class="crumbs"><a href="#/">A1</a> · ' + t("unit") + " " + esc(unitName(l.unit)) + "</div>";
     h += '<div class="lhead"><span class="tag">' + lessonNo(l) + " · ⏱ " + esc(l.length.replace("min", t("min"))) + "</span><h1>" + fr(l.titleFr) + '</h1><div class="sub">' + esc(pick(l.titleEn, l.titleAr)) + "</div></div>";
-    h += '<div class="layout"><div>' + videoBox(lk.video) + "</div>";
+    h += '<div class="layout"><div>' + videoBox(vid) + "</div>";
     // side panel
     var steps = [[r.watched, t("stepWatch")], [GM() ? GM().gamesPlayed(code) >= 2 : r.words, GM() ? GM().stepLabel() : t("stepWords")], [(r.quizBest || 0) >= PASS, t("stepQuiz")], [r.sheet, t("stepSheet")]];
     h += '<aside class="side"><div class="card"><h3>' + t("yourSteps") + '</h3><ul class="steps">' +
@@ -258,8 +266,8 @@
       "</div></div>";
     h += '<div class="card">' + (ar() && !l.hookAr ? "" : "<p>" + esc(pick(l.hook, l.hookAr)) + "</p>") + '<div class="actions" style="margin-top:12px">' +
       '<a class="btn small ghost" data-act="sheet" target="_blank" rel="noopener" href="' + sheetUrl(lk.worksheet) + '">📝 ' + (lk.worksheet ? t("worksheet") : t("worksheetFolder")) + "</a>" +
-      (lk.video ? '<a class="btn small ghost" target="_blank" rel="noopener" href="https://youtu.be/' + esc(lk.video) + '">▶ ' + t("openYT") + "</a>" : "") +
-      "</div>" + (ar() ? '<p class="note" style="margin-top:12px">' + t("arNote") + "</p>" : "") + "</div></aside></div>";
+      (lk.video ? '<a class="btn small ghost" target="_blank" rel="noopener" href="https://youtu.be/' + esc(vid) + '">▶ ' + t("openYT") + "</a>" : "") +
+      "</div>" + (ar() && !lk.videoAr ? '<p class="note" style="margin-top:12px">' + t("arNote") + "</p>" : "") + "</div></aside></div>";
     if (GM()) h += GM().practiceHtml(l);
     // tabs
     h += '<div class="tabs" role="tablist">' + tabs.map(function (x) {
@@ -289,7 +297,7 @@
     }
     if (tab === "dialogue") {
       var d = l.dialogue;
-      return '<h3 style="margin-bottom:10px">' + esc(d.heading) + '</h3><div class="dlg">' + d.lines.map(function (x) {
+      return '<h3 style="margin-bottom:10px">' + esc(pick(d.heading, d.headingAr)) + '</h3><div class="dlg">' + d.lines.map(function (x) {
         return '<button class="bubble ' + (x.side === "right" ? "right" : "") + '" data-say="' + esc(x.fr) + '" style="border:0;text-align:start"><b>' + esc(x.who) + ' 🔊</b><span class="fr">' + esc(x.fr) + '</span><br><span class="tr">' + esc(pick(x.en, x.ar)) + "</span></button>";
       }).join("") + "</div>";
     }
