@@ -1,0 +1,119 @@
+# Builds the Android and iPhone test apps from the website files (mobile/ = Capacitor project),
+# opens them on a phone emulator / iPhone simulator, takes screenshots, and puts everything on the
+# "app-preview" pre-release of this repo. Nothing is sent to Google Play or the App Store.
+name: Mobile apps (test builds)
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, "claude/**"]
+    paths: ["mobile/**", "french/**", "assets/**", ".github/workflows/mobile-apps.yml"]
+permissions:
+  contents: write
+concurrency:
+  group: mobile-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    defaults: { run: { working-directory: mobile } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 21 }
+      - run: npm ci
+      - run: npm run sync -- android
+      - name: Build the test app (APK)
+        run: cd android && ./gradlew --no-daemon assembleDebug
+      - run: mkdir -p ../out && cp android/app/build/outputs/apk/debug/app-debug.apk ../out/french-with-coco-test.apk
+      - name: Build the Google Play bundle (only when the upload key is in GitHub secrets)
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          APP_VERSION_CODE: ${{ github.run_number }}
+        run: |
+          if [ -z "$KS_B64" ]; then echo "No upload key yet: skipping the Play bundle."; exit 0; fi
+          echo "$KS_B64" | base64 -d > "$RUNNER_TEMP/upload.jks"
+          export ANDROID_KEYSTORE_FILE="$RUNNER_TEMP/upload.jks"
+          (cd android && ./gradlew --no-daemon bundleRelease)
+          cp android/app/build/outputs/bundle/release/app-release.aab ../out/french-with-coco-play.aab
+          rm -f "$RUNNER_TEMP/upload.jks"
+      - name: Enable KVM
+        working-directory: .
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
+      - name: Screenshots on an Android phone emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          profile: pixel_7
+          disable-animations: true
+          working-directory: .
+          script: bash mobile/scripts/android-shots.sh out/french-with-coco-test.apk out
+      - uses: actions/upload-artifact@v4
+        with: { name: android, path: out/ }
+
+  ios:
+    runs-on: macos-15
+    timeout-minutes: 60
+    defaults: { run: { working-directory: mobile } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci
+      - run: npm run sync -- ios
+      - name: Build for the iPhone simulator
+        run: |
+          xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Debug \
+            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath ../build-ios CODE_SIGNING_ALLOWED=NO build | tail -30
+      - name: Screenshots on the iPhone simulator
+        working-directory: .
+        run: bash mobile/scripts/ios-shots.sh build-ios/Build/Products/Debug-iphonesimulator/App.app out
+      - uses: actions/upload-artifact@v4
+        with: { name: ios, path: out/ }
+
+  store-screens:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults: { run: { working-directory: mobile } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci && npm i --no-save playwright@1 && npx playwright install --with-deps chromium
+      - name: Store screenshots (Google Play 1080x2160, App Store 1290x2796) and feature graphic
+        run: |
+          node scripts/copy-web.js
+          (cd www && python3 -m http.server 8799 >/dev/null 2>&1 &)
+          sleep 2
+          node store/make-screens.js 8799 ../out/store
+      - uses: actions/upload-artifact@v4
+        with: { name: store, path: out/ }
+
+  publish:
+    needs: [android, ios, store-screens]
+    if: always() && (needs.android.result == 'success' || needs.ios.result == 'success' || needs['store-screens'].result == 'success')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { path: dl }
+      - name: Put the test app and screenshots on the app-preview pre-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release view app-preview >/dev/null 2>&1 || gh release create app-preview --prerelease --target "${{ github.sha }}" \
+            --title "Coco app test build (not in the stores)" \
+            --notes "Test builds of the Learn French with Coco phone apps, made automatically from the repo. Android: download the .apk on an Android phone and open it (allow installing from this source). iPhone screenshots come from the iPhone simulator."
+          gh release upload app-preview --clobber $(find dl -type f ! -name '*.aab')
+          gh release edit app-preview --notes "Built from ${GITHUB_REF_NAME} @ ${GITHUB_SHA::7} on $(date -u '+%Y-%m-%d %H:%M UTC'). Android: download french-with-coco-test.apk on an Android phone and open it (allow installing from this source). Screenshots: android-*.png (Android emulator), iphone-*.png (iPhone simulator)."

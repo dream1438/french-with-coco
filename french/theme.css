@@ -210,3 +210,14 @@ body.acct-open{overflow:hidden}
 .acct-status[hidden]{display:none}
 @media (max-width:640px){.acct-btn{padding:7px}.acct-btn .acct-tx{display:none}.acct-btn.in{padding:2px}.acct-av{width:28px;height:28px}}
 @media (max-width:400px){.topnav{gap:4px}.topnav .hud{gap:4px}.topnav .hud .chip{padding:6px 7px}}
+
+/* Phone apps (Android / iPhone): keep the header clear of the status bar / notch */
+.in-app .top{padding-top:calc(12px + max(env(safe-area-inset-top), var(--safe-area-inset-top, 0px)))}
+
+/* Account: Apple sign-in, delete account */
+.acct-apple{background:#000;color:#fff;border:2px solid #000;box-shadow:none;margin-bottom:10px}
+.acct-apple svg{vertical-align:-3px;margin-inline-end:6px}
+.acct-del{margin-top:18px;padding-top:12px;border-top:1px solid #EFEAF7}
+.acct-del p{font-size:14px;color:#5E5878;margin:0 0 10px}
+.acct-link{background:none;border:0;color:#B3261E;font:inherit;font-size:14px;font-weight:700;text-decoration:underline;cursor:pointer;padding:4px}
+.acct-danger{background:#B3261E;color:#fff;box-shadow:none}

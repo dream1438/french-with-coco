@@ -1,0 +1,29 @@
+{
+  "appId": "com.languageswithcoco.french",
+  "appName": "French with Coco",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https",
+    "hostname": "app.languageswithcoco.com"
+  },
+  "android": {
+    "backgroundColor": "#2B1055"
+  },
+  "ios": {
+    "backgroundColor": "#2B1055",
+    "contentInset": "never"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1200,
+      "launchAutoHide": true,
+      "backgroundColor": "#2B1055",
+      "showSpinner": false
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#2B1055",
+      "overlaysWebView": false
+    }
+  }
+}
